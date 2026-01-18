@@ -161,7 +161,6 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#FAF9F6]">
-      {/* New Hero Header - Based on provided image */}
       <header className="relative h-[70vh] flex items-center justify-center overflow-hidden bg-white border-b border-gray-100">
         <div className="absolute inset-0 z-0">
           <div className="absolute -top-10 -left-10 w-64 h-64 opacity-60 md:opacity-100">
