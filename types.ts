@@ -19,4 +19,8 @@ export interface Category {
   items: MenuItem[];
 }
 
+export interface CartItem extends MenuItem {
+  quantity: number;
+}
+
 export type Language = 'pt' | 'en' | 'fr' | 'de';
