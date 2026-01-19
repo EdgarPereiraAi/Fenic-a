@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { MENU_DATA } from './data';
 import { MenuItemCard } from './components/MenuItemCard';
 import { LanguageSelector } from './components/LanguageSelector';
@@ -374,31 +375,12 @@ const App: React.FC = () => {
         lang={lang}
         phoneNumber={PHONE_NUMBER}
       />
-
-      <footer className="bg-white pt-24 pb-40 border-t border-gray-50 relative overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-[#E74C3C]/5 blur-[100px] rounded-full"></div>
-        <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
-          <h3 className="text-5xl text-[#1D3C18] mb-4 font-black italic font-serif tracking-tighter">Pizzeria Fenicia</h3>
-          <p className="text-[#E74C3C] font-black tracking-[0.6em] text-[10px] uppercase mb-16">Tavira • Algarve • Portugal</p>
-          <button 
-            onClick={() => isAdmin ? handleLogout() : setIsLoginModalOpen(true)}
-            className="text-[9px] text-gray-300 hover:text-[#FF5733] transition-all uppercase tracking-[0.5em] font-black border border-gray-100 px-6 py-3 rounded-full hover:border-[#FF5733]/20"
-          >
-            {isAdmin ? 'Fechar Painel' : 'Acesso Restrito'}
-          </button>
-          
-          <div className="mt-20 opacity-20 hover:opacity-100 transition-opacity duration-1000">
-             <img src="https://cdn-icons-png.flaticon.com/512/1046/1046857.png" className="w-12 h-12 mx-auto grayscale" alt="Pizza Icon" />
-          </div>
-        </div>
-      </footer>
-      
-      <style>{`
-        @keyframes spin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
-        @keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-      `}</style>
+      <AdminLoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+        onLogin={handleLogin}
+      />
+      <SpeedInsights />
     </div>
   );
 };
