@@ -1,12 +1,12 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { MENU_DATA } from './data.ts';
-import { MenuItemCard } from './components/MenuItemCard.tsx';
-import { LanguageSelector } from './components/LanguageSelector.tsx';
-import { QRCodeModal } from './components/QRCodeModal.tsx';
-import { PrintMenuModal } from './components/PrintMenuModal.tsx';
-import { AdminLoginModal } from './components/AdminLoginModal.tsx';
-import { Language } from './types.ts';
+import { MENU_DATA } from './data';
+import { MenuItemCard } from './components/MenuItemCard';
+import { LanguageSelector } from './components/LanguageSelector';
+import { QRCodeModal } from './components/QRCodeModal';
+import { PrintMenuModal } from './components/PrintMenuModal';
+import { AdminLoginModal } from './components/AdminLoginModal';
+import { Language } from './types';
 import { Search, QrCode, Phone, Instagram, MapPin, ChevronDown, MessageCircle, Lock, Unlock, Printer, LogOut } from 'lucide-react';
 
 const PHONE_NUMBER = "+351123456789"; 
