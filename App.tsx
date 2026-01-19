@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { MENU_DATA } from './data';
 import { MenuItemCard } from './components/MenuItemCard';
 import { LanguageSelector } from './components/LanguageSelector';
@@ -388,6 +389,7 @@ const App: React.FC = () => {
         onClose={() => setIsLoginModalOpen(false)}
         onLogin={handleLogin}
       />
+      <SpeedInsights />
     </div>
   );
 };
