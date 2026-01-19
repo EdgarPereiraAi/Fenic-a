@@ -1,7 +1,7 @@
 
 import React, { useRef } from 'react';
 import { MenuItem, Language } from '../types';
-import { Camera, Share2 } from 'lucide-react';
+import { Camera, Share2, Plus } from 'lucide-react';
 
 interface Props {
   item: MenuItem;
@@ -9,9 +9,10 @@ interface Props {
   isAdmin?: boolean;
   onImageUpdate?: (id: string, base64: string) => void;
   onPriceUpdate?: (id: string, price: string) => void;
+  onAddToCart?: (item: MenuItem) => void;
 }
 
-export const MenuItemCard: React.FC<Props> = ({ item, lang, isAdmin, onImageUpdate, onPriceUpdate }) => {
+export const MenuItemCard: React.FC<Props> = ({ item, lang, isAdmin, onImageUpdate, onPriceUpdate, onAddToCart }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageClick = () => {
@@ -46,10 +47,9 @@ export const MenuItemCard: React.FC<Props> = ({ item, lang, isAdmin, onImageUpda
         console.error('Error sharing:', err);
       }
     } else {
-      // Fallback: Copy to clipboard
       try {
         await navigator.clipboard.writeText(shareData.url);
-        alert('Link copiado para a área de transferência!');
+        alert('Link copiado!');
       } catch (err) {
         console.error('Could not copy text: ', err);
       }
@@ -59,22 +59,22 @@ export const MenuItemCard: React.FC<Props> = ({ item, lang, isAdmin, onImageUpda
   return (
     <div 
       id={item.id}
-      className={`flex items-center gap-4 sm:gap-5 py-5 border-b border-gray-100 last:border-none group relative transition-all ${isAdmin ? 'ring-2 ring-[#FF5733]/20 rounded-xl px-2 -mx-2 my-1 bg-[#FF5733]/5' : ''}`}
+      className={`flex items-center gap-4 sm:gap-8 py-8 border-b border-gray-50 last:border-none group relative transition-all ${isAdmin ? 'ring-4 ring-[#FF5733]/10 rounded-[2rem] px-4 -mx-4 my-2 bg-[#FF5733]/5' : ''}`}
     >
-      {/* Image Section */}
+      {/* Image Section with Enhanced Zoom */}
       <div 
-        className={`flex-shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden shadow-sm relative cursor-pointer group/img border border-gray-100 bg-gray-50`}
+        className={`flex-shrink-0 w-20 h-20 sm:w-32 sm:h-32 rounded-[2rem] overflow-hidden shadow-xl relative cursor-pointer group/img border-4 border-white bg-gray-100 transform transition-transform duration-500 hover:rotate-2 hover:scale-110 active:scale-95`}
         onClick={handleImageClick}
       >
         <img 
           src={item.image} 
           alt={item.name} 
-          className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-110"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-125"
         />
         
         {isAdmin && (
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity">
-            <Camera className="text-white" size={20} />
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity">
+            <Camera className="text-white" size={24} />
             <input 
               type="file" 
               ref={fileInputRef} 
@@ -87,44 +87,58 @@ export const MenuItemCard: React.FC<Props> = ({ item, lang, isAdmin, onImageUpda
       </div>
       
       <div className="flex-grow flex flex-col justify-center min-w-0">
-        <div className="flex justify-between items-start gap-2">
+        <div className="flex justify-between items-start gap-3">
           <div className="flex flex-col min-w-0">
-            <h3 className="text-base sm:text-lg font-black text-gray-900 truncate tracking-tight flex items-center">
-              {item.number && <span className="text-[10px] font-black text-[#FF5733] bg-[#FF5733]/10 px-1.5 py-0.5 rounded mr-1.5">#{item.number}</span>}
+            <h3 className="text-base sm:text-2xl font-black text-gray-900 truncate tracking-tighter flex items-center group-hover:text-[#E74C3C] transition-colors">
+              {item.number && <span className="text-[10px] font-black text-white bg-[#E74C3C] px-2 py-1 rounded-lg mr-2 shadow-sm italic">#{item.number}</span>}
               {item.name}
             </h3>
-            <p className="text-gray-500 text-xs sm:text-sm mt-1 line-clamp-2 italic leading-tight">
+            <p className="text-gray-400 text-xs sm:text-sm mt-2 line-clamp-2 italic font-medium leading-relaxed pr-4">
               {item.ingredients[lang]}
             </p>
           </div>
           
-          <div className="flex flex-col items-end gap-2 flex-shrink-0">
+          <div className="flex flex-col items-end gap-3 flex-shrink-0">
             {isAdmin ? (
               <input 
                 type="text"
                 value={item.price}
                 onChange={(e) => onPriceUpdate?.(item.id, e.target.value)}
-                className="font-black text-sm text-[#E74C3C] w-16 bg-white border-b border-[#E74C3C]/30 focus:border-[#E74C3C] focus:outline-none text-right px-1 rounded-sm"
+                className="font-black text-lg text-[#E74C3C] w-20 bg-white border-b-2 border-[#E74C3C]/20 focus:border-[#E74C3C] focus:outline-none text-right px-1 rounded-sm"
                 placeholder="0.00€"
               />
             ) : (
-              <span className="font-black text-lg text-[#E74C3C] whitespace-nowrap">{item.price}</span>
+              <div className="bg-[#E74C3C]/5 px-3 py-1 rounded-xl">
+                 <span className="font-black text-base sm:text-2xl text-[#E74C3C] whitespace-nowrap">{item.price}</span>
+              </div>
             )}
             
-            <button 
-              onClick={handleShare}
-              className="p-1.5 rounded-lg text-gray-300 hover:text-[#E74C3C] hover:bg-gray-50 transition-all active:scale-90"
-              title="Partilhar"
-            >
-              <Share2 size={16} />
-            </button>
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={handleShare}
+                className="p-2 rounded-xl text-gray-200 hover:text-[#E74C3C] hover:bg-[#E74C3C]/5 transition-all"
+                title="Partilhar"
+              >
+                <Share2 size={18} />
+              </button>
+              
+              {!isAdmin && onAddToCart && (
+                <button 
+                  onClick={() => onAddToCart(item)}
+                  className="p-2 sm:p-3 bg-[#1D3C18] text-white rounded-2xl shadow-lg shadow-[#1D3C18]/20 hover:bg-black hover:scale-110 transition-all active:scale-90 flex items-center gap-2"
+                >
+                  <Plus size={20} strokeWidth={3} />
+                  <span className="hidden sm:inline text-[11px] font-black uppercase tracking-widest">Adicionar</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
       {isAdmin && (
-        <div className="absolute -top-1.5 -right-1.5">
-          <span className="bg-[#FF5733] text-white text-[8px] px-1.5 py-0.5 rounded-full font-black uppercase shadow-sm border border-white">Edit</span>
+        <div className="absolute top-2 right-2">
+          <span className="bg-[#FF5733] text-white text-[8px] px-3 py-1 rounded-full font-black uppercase shadow-lg border-2 border-white">Editável</span>
         </div>
       )}
     </div>

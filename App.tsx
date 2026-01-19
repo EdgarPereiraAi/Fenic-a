@@ -6,8 +6,9 @@ import { LanguageSelector } from './components/LanguageSelector';
 import { QRCodeModal } from './components/QRCodeModal';
 import { PrintMenuModal } from './components/PrintMenuModal';
 import { AdminLoginModal } from './components/AdminLoginModal';
-import { Language } from './types';
-import { Search, QrCode, Phone, Instagram, MapPin, ChevronDown, MessageCircle, Lock, Unlock, Printer, LogOut } from 'lucide-react';
+import { OrderNotepad } from './components/OrderNotepad';
+import { Language, MenuItem, CartItem } from './types';
+import { Search, QrCode, Phone, ChevronDown, MessageCircle, Unlock, ClipboardList, ArrowRight } from 'lucide-react';
 
 const PHONE_NUMBER = "+351123456789"; 
 
@@ -30,14 +31,14 @@ const OrderButtons: React.FC = () => {
     <div className="flex flex-row gap-3 w-full max-w-md mx-auto my-6 px-4">
       <a
         href={`tel:${PHONE_NUMBER}`}
-        className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#E74C3C] text-white hover:bg-[#C0392B] transition-all duration-300 font-bold shadow-md shadow-[#E74C3C]/30 hover:scale-105 active:scale-95 text-sm"
+        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#E74C3C] text-white hover:bg-[#C0392B] transition-all duration-300 font-black shadow-lg shadow-[#E74C3C]/40 hover:scale-105 active:scale-95 text-xs uppercase tracking-widest"
       >
         <Phone size={18} />
         Telefone
       </a>
       <button
         onClick={handleWhatsApp}
-        className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#27AE60] text-white hover:bg-[#219150] transition-all duration-300 font-bold shadow-md shadow-[#27AE60]/30 hover:scale-105 active:scale-95 text-sm"
+        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#27AE60] text-white hover:bg-[#219150] transition-all duration-300 font-black shadow-lg shadow-[#27AE60]/40 hover:scale-105 active:scale-95 text-xs uppercase tracking-widest"
       >
         <MessageCircle size={18} />
         WhatsApp
@@ -53,8 +54,11 @@ const App: React.FC = () => {
   const [isQRModalOpen, setIsQRModalOpen] = useState(false);
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isNotepadOpen, setIsNotepadOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [customImages, setCustomImages] = useState<Record<string, string>>({});
   const [customPrices, setCustomPrices] = useState<Record<string, string>>({});
 
@@ -62,23 +66,17 @@ const App: React.FC = () => {
     const savedImages = localStorage.getItem('pizzaria_fenicia_custom_images');
     const savedPrices = localStorage.getItem('pizzaria_fenicia_custom_prices');
     const savedAdminStatus = localStorage.getItem('pizzaria_fenicia_is_admin') === 'true';
+    const savedCart = localStorage.getItem('pizzaria_fenicia_cart');
     
-    if (savedImages) {
-      try {
-        setCustomImages(JSON.parse(savedImages));
-      } catch (e) {
-        console.error("Failed to parse custom images", e);
-      }
-    }
-    if (savedPrices) {
-      try {
-        setCustomPrices(JSON.parse(savedPrices));
-      } catch (e) {
-        console.error("Failed to parse custom prices", e);
-      }
-    }
+    if (savedImages) try { setCustomImages(JSON.parse(savedImages)); } catch (e) {}
+    if (savedPrices) try { setCustomPrices(JSON.parse(savedPrices)); } catch (e) {}
+    if (savedCart) try { setCartItems(JSON.parse(savedCart)); } catch (e) {}
     setIsAdmin(savedAdminStatus);
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem('pizzaria_fenicia_cart', JSON.stringify(cartItems));
+  }, [cartItems]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -97,6 +95,34 @@ const App: React.FC = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const addToCart = (item: MenuItem) => {
+    setCartItems(prev => {
+      const existing = prev.find(i => i.id === item.id);
+      if (existing) {
+        return prev.map(i => i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i);
+      }
+      return [...prev, { ...item, quantity: 1 }];
+    });
+  };
+
+  const updateCartQuantity = (id: string, delta: number) => {
+    setCartItems(prev => prev.map(item => {
+      if (item.id === id) {
+        const newQty = Math.max(1, item.quantity + delta);
+        return { ...item, quantity: newQty };
+      }
+      return item;
+    }));
+  };
+
+  const removeFromCart = (id: string) => {
+    setCartItems(prev => prev.filter(item => item.id !== id));
+  };
+
+  const clearCart = () => {
+    setCartItems([]);
+  };
 
   const handleImageUpdate = (id: string, base64: string) => {
     const newImages = { ...customImages, [id]: base64 };
@@ -159,125 +185,135 @@ const App: React.FC = () => {
     }
   };
 
+  const cartTotalItems = cartItems.reduce((sum, i) => sum + i.quantity, 0);
+
   return (
     <div className="min-h-screen bg-[#FAF9F6]">
-      <header className="relative h-[70vh] flex items-center justify-center overflow-hidden bg-white border-b border-gray-100">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute -top-10 -left-10 w-64 h-64 opacity-60 md:opacity-100">
+      <header className="relative h-[85vh] flex items-center justify-center overflow-hidden bg-white">
+        {/* Background Layers */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          {/* Main Spinning Pizza - Increased visibility and color */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110vw] md:w-[85vh] h-[110vw] md:h-[85vh] opacity-60 md:opacity-80 animate-[spin_80s_linear_infinite]">
             <img 
-              src="https://images.unsplash.com/photo-1590779033100-9f60702a0509?auto=format&fit=crop&w=400&q=80" 
-              className="w-full h-full object-contain rotate-[-15deg]"
-              alt="Fresh tomatoes"
+              src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1200&q=80" 
+              className="w-full h-full object-cover rounded-full shadow-[0_0_150px_rgba(231,76,60,0.4)] saturate-[1.4] brightness-[1.05]" 
+              alt="Pizza" 
             />
           </div>
-          <div className="absolute -top-10 -right-20 w-80 h-80 opacity-60 md:opacity-100">
-            <img 
-              src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80" 
-              className="w-full h-full object-contain rotate-[15deg]"
-              alt="Fresh pizza"
-            />
-          </div>
+          
+          {/* Softer Radial Gradient to let the pizza pop */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2)_0%,white_85%)] z-[1]"></div>
         </div>
 
-        <div className="relative z-10 text-center px-4 max-w-4xl">
-          <h2 className="text-[#D4AF37] text-4xl md:text-5xl font-serif mb-8 tracking-[0.2em] uppercase">Menu</h2>
-          
-          <div className="flex flex-col items-center">
-            <div className="flex flex-col items-center relative">
-              <h1 className="text-6xl md:text-9xl tracking-tight leading-none mb-2">
-                <span className="text-[#E74C3C] block font-serif">Pizzeria</span>
-                <span className="text-[#27AE60] block font-serif mt-[-10px] md:mt-[-20px]">Fenicia</span>
+        <div className="relative z-10 text-center px-4 max-w-4xl animate-in fade-in duration-1000">
+          <div className="relative mb-14 transform hover:scale-[1.02] transition-transform duration-700 cursor-default">
+            {/* Logo Container with glassmorphism for legibility over the brighter background */}
+            <div className="bg-white/80 backdrop-blur-md p-10 md:p-16 rounded-[4rem] border border-white shadow-[0_40px_100px_rgba(0,0,0,0.12)] relative overflow-hidden group">
+              <h1 className="text-7xl md:text-[12rem] leading-[0.8] font-serif tracking-tighter filter drop-shadow-[0_4px_4px_rgba(0,0,0,0.15)]">
+                <span className="text-[#E74C3C] block mb-2">Pizzeria</span>
+                <span className="text-[#27AE60] block -mt-4 md:-mt-8">Fenicia</span>
               </h1>
-              <div className="mt-4 md:absolute md:-right-32 md:bottom-0">
-                <img 
-                   src="https://cdn-icons-png.flaticon.com/512/1046/1046857.png" 
-                   className="w-20 h-20 md:w-32 md:h-32 object-contain filter drop-shadow-md grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-700"
-                   alt="Chef icon"
-                />
-              </div>
+            </div>
+            
+            {/* "Badge" floating - more professional */}
+            <div className="absolute -top-6 -right-6 bg-[#D4AF37] text-white w-24 h-24 rounded-full flex flex-col items-center justify-center font-black rotate-12 shadow-2xl border-4 border-white scale-90 md:scale-100">
+               <span className="text-[11px] leading-tight">ARTESANAL</span>
+               <span className="text-xl">100%</span>
             </div>
           </div>
           
-          <p className="text-gray-500 text-sm md:text-base font-medium mt-12 mb-8 max-w-lg mx-auto leading-relaxed border-t border-gray-100 pt-6">
-            O autêntico sabor da tradição em cada fatia. <br className="hidden md:block" />
-            Ingredientes frescos, paixão italiana e herança mediterrânea.
-          </p>
-          
-          <div className="flex justify-center mt-6">
-            <LanguageSelector currentLang={lang} onLangChange={setLang} />
+          <div className="flex flex-col items-center gap-10">
+            <p className="text-gray-700 text-lg md:text-2xl font-serif italic tracking-wide max-w-lg leading-relaxed font-bold">
+              "A verdadeira essência italiana no coração do Algarve."
+            </p>
+            
+            <div className="scale-110">
+               <LanguageSelector currentLang={lang} onLangChange={setLang} />
+            </div>
           </div>
+        </div>
+        
+        {/* Scroll indicator - adjusted color for better contrast */}
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce text-gray-400">
+           <ChevronDown size={32} />
         </div>
       </header>
 
-      <div className="max-w-4xl mx-auto -mt-8 relative z-20">
+      <div className="max-w-4xl mx-auto -mt-12 relative z-30">
         <OrderButtons />
       </div>
 
       {isAdmin && (
-        <div className="bg-[#FF5733] text-white py-2 text-center sticky top-0 z-[60] font-black text-xs shadow-xl flex items-center justify-center gap-4 animate-pulse">
-          <div className="flex items-center gap-2 uppercase tracking-widest">
-            <Unlock size={14} /> MODO DE EDIÇÃO ATIVO
-          </div>
-          <button 
-            onClick={handleLogout}
-            className="bg-white text-[#FF5733] px-3 py-1 rounded-full flex items-center gap-1 hover:bg-black hover:text-white transition-all font-black uppercase text-[10px]"
-          >
-            <LogOut size={12} /> Sair
-          </button>
+        <div className="bg-[#FF5733] text-white py-2 text-center sticky top-0 z-[60] font-black text-xs shadow-xl flex items-center justify-center gap-4 uppercase tracking-[0.2em]">
+          <Unlock size={14} /> Modo Gestão Ativo
+          <button onClick={handleLogout} className="bg-white text-[#FF5733] px-3 py-1 rounded-full text-[9px] font-black hover:bg-black hover:text-white transition-colors">Sair</button>
         </div>
       )}
 
-      <div className="max-w-xl mx-auto px-4 mt-8 mb-6">
-        <div className="relative group">
-          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+      {/* Search & Navigation */}
+      <div className="sticky top-2 z-40 max-w-xl mx-auto px-4 mt-12 mb-8">
+        <div className="relative group shadow-2xl rounded-[2rem] overflow-hidden bg-white/80 backdrop-blur-xl border border-white/20">
+          <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
             <Search className="h-5 w-5 text-gray-400 group-focus-within:text-[#E74C3C] transition-colors" />
           </div>
           <input
             type="text"
-            placeholder="O que procura hoje?..."
+            placeholder="Qual é o seu desejo hoje?..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="block w-full pl-12 pr-4 py-3 bg-white border-2 border-transparent rounded-xl shadow-lg focus:border-[#E74C3C] focus:ring-0 focus:outline-none text-gray-900 text-base transition-all"
+            className="block w-full pl-14 pr-6 py-5 bg-transparent border-none focus:ring-0 focus:outline-none text-gray-900 text-base font-bold placeholder:font-medium transition-all"
           />
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 mb-12">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+      {/* Categories Vertical Layout for Mobile/Tablet */}
+      <div className="max-w-4xl mx-auto px-4 mb-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-row lg:flex-wrap lg:justify-center gap-3">
           {processedMenu.map((category) => (
             <button
               key={category.id}
               onClick={() => scrollToCategory(category.id)}
-              className={`py-3 px-4 rounded-xl text-center font-bold transition-all duration-300 shadow-md border border-white/10 flex flex-col items-center gap-1 group overflow-hidden relative ${
-                activeCategory === category.id ? 'scale-105 shadow-xl ring-2 ring-black/10 z-10' : 'opacity-90 hover:opacity-100'
+              className={`group relative overflow-hidden flex items-center justify-between px-6 py-5 rounded-3xl font-black transition-all duration-300 shadow-lg ${
+                activeCategory === category.id 
+                  ? 'scale-105 shadow-2xl ring-4 ring-white z-10' 
+                  : 'opacity-90 hover:opacity-100 hover:translate-y-[-2px]'
               }`}
-              style={{ 
-                backgroundColor: CATEGORY_COLORS[category.id] || '#ccc',
-                color: 'white'
-              }}
+              style={{ backgroundColor: CATEGORY_COLORS[category.id] || '#ccc', color: 'white' }}
             >
-              <span className="uppercase tracking-widest text-[10px] sm:text-xs relative z-10">{category.title}</span>
+              <div className="flex flex-col items-start gap-1">
+                <span className="uppercase tracking-[0.2em] text-[11px] sm:text-xs leading-none">Explorar</span>
+                <span className="text-sm sm:text-base uppercase tracking-tight">{category.title}</span>
+              </div>
+              
+              <div className={`p-2 rounded-2xl bg-white/20 transition-transform duration-500 ${activeCategory === category.id ? 'rotate-90' : 'group-hover:translate-x-1'}`}>
+                <ArrowRight size={18} />
+              </div>
+              
               {activeCategory === category.id && (
-                <div className="w-1 h-1 bg-white rounded-full mt-0.5 animate-pulse"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-[shimmer_2s_infinite] pointer-events-none"></div>
               )}
             </button>
           ))}
         </div>
       </div>
 
-      <main className="max-w-3xl mx-auto px-4">
+      <main className="max-w-3xl mx-auto px-4 pb-20">
         {filteredMenu.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-gray-500 text-lg">Nenhum prato encontrado.</p>
+          <div className="text-center py-32 opacity-30">
+            <Search size={64} className="mx-auto mb-4" strokeWidth={1} />
+            <p className="text-gray-500 text-xl font-serif italic">Nenhum sabor encontrado com esse nome.</p>
           </div>
         ) : (
           filteredMenu.map((category) => (
-            <section key={category.id} id={category.id} className="mb-16 scroll-mt-24">
-              <div className="mb-6 flex items-center gap-3">
-                <div className="w-2 h-8 rounded-full shadow-md" style={{ backgroundColor: CATEGORY_COLORS[category.id] }}></div>
-                <h2 className="text-3xl text-gray-900 font-black">{category.title}</h2>
+            <section key={category.id} id={category.id} className="mb-20 scroll-mt-32">
+              <div className="mb-8 flex items-end justify-between px-2">
+                <div className="flex items-center gap-4">
+                  <div className="w-3 h-10 rounded-full shadow-lg" style={{ backgroundColor: CATEGORY_COLORS[category.id] }}></div>
+                  <h2 className="text-4xl text-gray-900 font-black tracking-tighter">{category.title}</h2>
+                </div>
+                <span className="text-[10px] font-black text-gray-300 uppercase tracking-[0.3em]">{category.items.length} Pratos</span>
               </div>
-              <div className="bg-white rounded-[1.5rem] p-6 shadow-xl border border-gray-100 space-y-2">
+              <div className="bg-white rounded-[3rem] p-6 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 space-y-2">
                 {category.items.map((item) => (
                   <MenuItemCard 
                     key={item.id} 
@@ -286,6 +322,7 @@ const App: React.FC = () => {
                     isAdmin={isAdmin}
                     onImageUpdate={handleImageUpdate}
                     onPriceUpdate={handlePriceUpdate}
+                    onAddToCart={addToCart}
                   />
                 ))}
               </div>
@@ -294,100 +331,74 @@ const App: React.FC = () => {
         )}
       </main>
 
-      <div className="max-w-4xl mx-auto py-12 bg-white/50 backdrop-blur-sm rounded-t-[2rem] mt-16">
-        <div className="text-center mb-6">
-          <p className="text-[#FF5733] text-[10px] font-black uppercase tracking-[0.3em]">Ficou com fome?</p>
-          <h3 className="text-3xl text-gray-900 mt-1 font-black">Peça agora mesmo</h3>
-        </div>
-        <OrderButtons />
-        
-        <div className="flex justify-center mt-12 px-4">
-          <button 
-            onClick={() => setIsPrintModalOpen(true)}
-            className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-[#1D3C18] text-white hover:bg-black transition-all font-black uppercase text-xs tracking-[0.2em] shadow-xl active:scale-95"
+      {/* Action Buttons */}
+      <div className="fixed bottom-8 right-8 flex flex-col gap-4 z-[140]">
+        {!isAdmin && (
+          <button
+            onClick={() => setIsNotepadOpen(true)}
+            className="relative p-5 bg-[#1D3C18] text-white rounded-[2rem] shadow-[0_20px_40px_rgba(29,60,24,0.4)] hover:scale-110 transition-all duration-500 active:scale-90 group"
           >
-            <Printer size={20} />
-            Gerar Menu para Impressão (A4/A3/A2)
+            <ClipboardList size={28} className="group-hover:rotate-12 transition-transform" />
+            {cartTotalItems > 0 && (
+              <span className="absolute -top-2 -right-2 bg-[#E74C3C] text-white text-[10px] font-black w-7 h-7 flex items-center justify-center rounded-full border-4 border-[#FAF9F6] shadow-lg animate-bounce">
+                {cartTotalItems}
+              </span>
+            )}
           </button>
-        </div>
-      </div>
-
-      <footer className="bg-white pt-16 pb-24 border-t border-gray-100">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <div className="mb-12">
-            <h3 className="text-5xl text-[#1D3C18] mb-2 font-black italic font-serif">Pizzeria Fenicia</h3>
-            <p className="text-[#E74C3C] font-black tracking-[0.4em] text-xs uppercase mb-8">Tavira, Algarve</p>
-            <p className="text-gray-600 max-w-md mx-auto italic text-base mb-10">
-              "A verdadeira experiência da pizza artesanal."
-            </p>
-            <div className="flex justify-center gap-8 text-gray-400">
-               <Instagram size={24} className="hover:text-[#E74C3C] transition-all cursor-pointer hover:scale-110" />
-               <Phone size={24} className="hover:text-[#27AE60] transition-all cursor-pointer hover:scale-110" />
-               <MapPin size={24} className="hover:text-gray-600 transition-all cursor-pointer hover:scale-110" />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16 text-sm text-gray-600">
-            <div className="bg-gray-50 p-6 rounded-2xl shadow-inner border border-gray-100">
-              <h4 className="font-black text-gray-900 uppercase tracking-widest mb-4 text-xs">Nosso Horário</h4>
-              <p className="font-bold text-[#1D3C18]">Segunda a Sábado</p>
-              <div className="flex flex-col gap-1 mt-2 font-black text-gray-800 text-lg">
-                <span>12:00h - 15:00h</span>
-                <span>19:00h - 22:00h</span>
-              </div>
-              <p className="text-[#E74C3C] font-black pt-4 uppercase tracking-widest text-xs">Domingo: Encerrado</p>
-            </div>
-            <div className="bg-gray-50 p-6 rounded-2xl shadow-inner border border-gray-100 flex flex-col justify-center">
-              <h4 className="font-black text-gray-900 uppercase tracking-widest mb-4 text-xs">Onde Estamos</h4>
-              <p className="font-bold text-gray-800">Largo da Caracolinha, n.8</p>
-              <p className="text-gray-600">8800-310 Tavira</p>
-              <p className="text-gray-600">Algarve, Portugal</p>
-            </div>
-          </div>
-
-          <div className="pt-12 border-t border-gray-100 space-y-8">
-            <p className="text-[#1D3C18] font-black text-2xl drop-shadow-sm font-serif">Obrigado Pela sua Visita!</p>
-            
-            <button 
-              onClick={() => isAdmin ? handleLogout() : setIsLoginModalOpen(true)}
-              className="inline-flex items-center gap-2 text-[10px] text-gray-300 hover:text-[#FF5733] transition-all uppercase tracking-[0.4em] font-black px-4 py-2 rounded-lg border border-transparent hover:border-gray-200"
-            >
-              {isAdmin ? <Lock size={14} /> : <Unlock size={14} />}
-              {isAdmin ? 'Sair da Gestão' : 'Gestão'}
-            </button>
-
-            <p className="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Iva incluido à Taxa em vigor</p>
-          </div>
-        </div>
-      </footer>
-
-      <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-40">
+        )}
         <button
           onClick={() => setIsQRModalOpen(true)}
-          className="p-3.5 bg-white text-[#E74C3C] rounded-full shadow-lg border border-gray-100 hover:scale-110 transition-all duration-300 active:scale-95 group"
+          className="p-5 bg-white text-[#E74C3C] rounded-[2rem] shadow-[0_20px_40px_rgba(0,0,0,0.1)] border border-gray-100 hover:scale-110 transition-all active:scale-90 group"
         >
-          <QrCode size={22} className="group-hover:rotate-12 transition-transform" />
+          <QrCode size={28} className="group-hover:rotate-[-12deg] transition-transform" />
         </button>
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className={`p-3.5 bg-gray-900 text-white rounded-full shadow-lg transition-all duration-500 hover:bg-black active:scale-90 ${isScrolled ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-20 opacity-0 scale-50 pointer-events-none'}`}
+          className={`p-5 bg-gray-900 text-white rounded-[2rem] shadow-xl transition-all duration-700 ${isScrolled ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0 pointer-events-none'}`}
         >
-          <ChevronDown className="rotate-180" size={22} />
+          <ChevronDown className="rotate-180" size={28} />
         </button>
       </div>
 
       <QRCodeModal isOpen={isQRModalOpen} onClose={() => setIsQRModalOpen(false)} />
-      <PrintMenuModal 
-        isOpen={isPrintModalOpen} 
-        onClose={() => setIsPrintModalOpen(false)} 
-        menuData={processedMenu}
+      <PrintMenuModal isOpen={isPrintModalOpen} onClose={() => setIsPrintModalOpen(false)} menuData={processedMenu} lang={lang} />
+      <AdminLoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} onLogin={handleLogin} />
+      
+      <OrderNotepad 
+        isOpen={isNotepadOpen} 
+        onClose={() => setIsNotepadOpen(false)} 
+        items={cartItems}
+        onUpdateQuantity={updateCartQuantity}
+        onRemove={removeFromCart}
+        onClear={clearCart}
         lang={lang}
+        phoneNumber={PHONE_NUMBER}
       />
-      <AdminLoginModal
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
-        onLogin={handleLogin}
-      />
+
+      <footer className="bg-white pt-24 pb-40 border-t border-gray-50 relative overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-[#E74C3C]/5 blur-[100px] rounded-full"></div>
+        <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
+          <h3 className="text-5xl text-[#1D3C18] mb-4 font-black italic font-serif tracking-tighter">Pizzeria Fenicia</h3>
+          <p className="text-[#E74C3C] font-black tracking-[0.6em] text-[10px] uppercase mb-16">Tavira • Algarve • Portugal</p>
+          <button 
+            onClick={() => isAdmin ? handleLogout() : setIsLoginModalOpen(true)}
+            className="text-[9px] text-gray-300 hover:text-[#FF5733] transition-all uppercase tracking-[0.5em] font-black border border-gray-100 px-6 py-3 rounded-full hover:border-[#FF5733]/20"
+          >
+            {isAdmin ? 'Fechar Painel' : 'Acesso Restrito'}
+          </button>
+          
+          <div className="mt-20 opacity-20 hover:opacity-100 transition-opacity duration-1000">
+             <img src="https://cdn-icons-png.flaticon.com/512/1046/1046857.png" className="w-12 h-12 mx-auto grayscale" alt="Pizza Icon" />
+          </div>
+        </div>
+      </footer>
+      
+      <style>{`
+        @keyframes spin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+        @keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
     </div>
   );
 };
