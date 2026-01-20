@@ -249,7 +249,7 @@ export const PrintMenuModal: React.FC<Props> = ({ isOpen, onClose, menuData, lan
 
                     <div className="hidden sm:flex flex-col text-right opacity-30">
                       <p className="text-[7px] font-black uppercase tracking-widest text-[#1D3C18]">Informações</p>
-                      <p className="text-[7px] font-medium text-gray-600">+351 123 456 789</p>
+                      <p className="text-[7px] font-medium text-gray-600">281 325 175</p>
                       <p className="text-[7px] font-medium text-gray-600">IVA incluído</p>
                     </div>
                   </div>

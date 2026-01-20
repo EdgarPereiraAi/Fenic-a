@@ -10,31 +10,25 @@ import { OrderNotepad } from './components/OrderNotepad';
 import { Language, MenuItem, CartItem } from './types';
 import { Search, QrCode, Phone, ChevronDown, MessageCircle, Unlock, ClipboardList, ArrowRight } from 'lucide-react';
 
-const PHONE_NUMBER = "+351123456789"; 
-
-const CATEGORY_COLORS: Record<string, string> = {
-  'entradas': '#FF5733',        
-  'saladas': '#2ECC71',         
-  'massas': '#F1C40F',          
-  'especialidades': '#9B59B6',  
-  'pizzas-classicas': '#E74C3C', 
-  'pizzas-especiais': '#C0392B', 
-};
+// Número local para exibição e links
+const PHONE_NUMBER = "281325175"; 
+const FORMATTED_PHONE = "281 325 175";
+const WHATSAPP_NUMBER = "+351281325175";
 
 const OrderButtons: React.FC = () => {
   const handleWhatsApp = () => {
     const text = encodeURIComponent(`Olá! Gostaria de consultar o menu e fazer um pedido na Pizzaria Fenícia.`);
-    window.open(`https://wa.me/${PHONE_NUMBER}?text=${text}`, '_blank');
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${text}`, '_blank');
   };
 
   return (
     <div className="flex flex-row gap-3 w-full max-w-md mx-auto my-6 px-4">
       <a
-        href={`tel:${PHONE_NUMBER}`}
+        href={`tel:+351${PHONE_NUMBER}`}
         className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#E74C3C] text-white hover:bg-[#C0392B] transition-all duration-300 font-black shadow-lg shadow-[#E74C3C]/40 hover:scale-105 active:scale-95 text-xs uppercase tracking-widest"
       >
         <Phone size={18} />
-        Telefone
+        {FORMATTED_PHONE}
       </a>
       <button
         onClick={handleWhatsApp}
@@ -187,12 +181,19 @@ const App: React.FC = () => {
 
   const cartTotalItems = cartItems.reduce((sum, i) => sum + i.quantity, 0);
 
+  const CATEGORY_COLORS: Record<string, string> = {
+    'entradas': '#FF5733',        
+    'saladas': '#2ECC71',         
+    'massas': '#F1C40F',          
+    'especialidades': '#9B59B6',  
+    'pizzas-classicas': '#E74C3C', 
+    'pizzas-especiais': '#C0392B', 
+  };
+
   return (
     <div className="min-h-screen bg-[#FAF9F6]">
       <header className="relative h-[85vh] flex items-center justify-center overflow-hidden bg-white">
-        {/* Background Layers */}
         <div className="absolute inset-0 z-0 overflow-hidden">
-          {/* Main Spinning Pizza - Increased visibility and color */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110vw] md:w-[85vh] h-[110vw] md:h-[85vh] opacity-60 md:opacity-80 animate-[spin_80s_linear_infinite]">
             <img 
               src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1200&q=80" 
@@ -200,22 +201,17 @@ const App: React.FC = () => {
               alt="Pizza" 
             />
           </div>
-          
-          {/* Softer Radial Gradient to let the pizza pop */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2)_0%,white_85%)] z-[1]"></div>
         </div>
 
         <div className="relative z-10 text-center px-4 max-w-4xl animate-in fade-in duration-1000">
           <div className="relative mb-14 transform hover:scale-[1.02] transition-transform duration-700 cursor-default">
-            {/* Logo Container with glassmorphism for legibility over the brighter background */}
             <div className="bg-white/80 backdrop-blur-md p-10 md:p-16 rounded-[4rem] border border-white shadow-[0_40px_100px_rgba(0,0,0,0.12)] relative overflow-hidden group">
               <h1 className="text-7xl md:text-[12rem] leading-[0.8] font-serif tracking-tighter filter drop-shadow-[0_4px_4px_rgba(0,0,0,0.15)]">
                 <span className="text-[#E74C3C] block mb-2">Pizzeria</span>
                 <span className="text-[#27AE60] block -mt-4 md:-mt-8">Fenicia</span>
               </h1>
             </div>
-            
-            {/* "Badge" floating - more professional */}
             <div className="absolute -top-6 -right-6 bg-[#D4AF37] text-white w-24 h-24 rounded-full flex flex-col items-center justify-center font-black rotate-12 shadow-2xl border-4 border-white scale-90 md:scale-100">
                <span className="text-[11px] leading-tight">ARTESANAL</span>
                <span className="text-xl">100%</span>
@@ -226,14 +222,11 @@ const App: React.FC = () => {
             <p className="text-gray-700 text-lg md:text-2xl font-serif italic tracking-wide max-w-lg leading-relaxed font-bold">
               "A verdadeira essência italiana no coração do Algarve."
             </p>
-            
             <div className="scale-110">
                <LanguageSelector currentLang={lang} onLangChange={setLang} />
             </div>
           </div>
         </div>
-        
-        {/* Scroll indicator - adjusted color for better contrast */}
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce text-gray-400">
            <ChevronDown size={32} />
         </div>
@@ -250,7 +243,6 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* Search & Navigation */}
       <div className="sticky top-2 z-40 max-w-xl mx-auto px-4 mt-12 mb-8">
         <div className="relative group shadow-2xl rounded-[2rem] overflow-hidden bg-white/80 backdrop-blur-xl border border-white/20">
           <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
@@ -266,7 +258,6 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Categories Vertical Layout for Mobile/Tablet */}
       <div className="max-w-4xl mx-auto px-4 mb-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-row lg:flex-wrap lg:justify-center gap-3">
           {processedMenu.map((category) => (
@@ -284,11 +275,9 @@ const App: React.FC = () => {
                 <span className="uppercase tracking-[0.2em] text-[11px] sm:text-xs leading-none">Explorar</span>
                 <span className="text-sm sm:text-base uppercase tracking-tight">{category.title}</span>
               </div>
-              
               <div className={`p-2 rounded-2xl bg-white/20 transition-transform duration-500 ${activeCategory === category.id ? 'rotate-90' : 'group-hover:translate-x-1'}`}>
                 <ArrowRight size={18} />
               </div>
-              
               {activeCategory === category.id && (
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-[shimmer_2s_infinite] pointer-events-none"></div>
               )}
@@ -331,7 +320,6 @@ const App: React.FC = () => {
         )}
       </main>
 
-      {/* Action Buttons */}
       <div className="fixed bottom-8 right-8 flex flex-col gap-4 z-[140]">
         {!isAdmin && (
           <button
@@ -386,18 +374,14 @@ const App: React.FC = () => {
           >
             {isAdmin ? 'Fechar Painel' : 'Acesso Restrito'}
           </button>
-          
           <div className="mt-20 opacity-20 hover:opacity-100 transition-opacity duration-1000">
              <img src="https://cdn-icons-png.flaticon.com/512/1046/1046857.png" className="w-12 h-12 mx-auto grayscale" alt="Pizza Icon" />
           </div>
         </div>
       </footer>
-      
       <style>{`
         @keyframes spin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
         @keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
     </div>
   );

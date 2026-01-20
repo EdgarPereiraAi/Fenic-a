@@ -24,12 +24,14 @@ export const OrderNotepad: React.FC<Props> = ({
     return sum + (priceNum * item.quantity);
   }, 0);
 
+  // Garantir formato internacional no link
+  const telLink = phoneNumber.startsWith('+') ? phoneNumber : `+351${phoneNumber}`;
+
   return (
     <div className="fixed inset-0 z-[150] flex items-end sm:items-center justify-end sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
       <div 
         className="bg-[#FFFDF0] w-full sm:w-[420px] max-h-[95vh] sm:max-h-[85vh] flex flex-col rounded-t-[2rem] sm:rounded-[2rem] shadow-2xl overflow-hidden border-t-8 border-[#1D3C18] animate-in slide-in-from-bottom duration-500"
       >
-        {/* Header - Mais compacto */}
         <div className="p-4 bg-[#1D3C18] text-white flex items-center justify-between shadow-lg">
           <div className="flex items-center gap-2">
             <ClipboardList className="text-[#D4AF37]" size={20} />
@@ -43,7 +45,6 @@ export const OrderNotepad: React.FC<Props> = ({
           </button>
         </div>
 
-        {/* Notepad Content - Estilo Papel Pautado */}
         <div 
           className="flex-1 overflow-y-auto relative"
           style={{ 
@@ -108,7 +109,6 @@ export const OrderNotepad: React.FC<Props> = ({
           )}
         </div>
 
-        {/* Footer - Total e Botão de Ligar */}
         <div className="bg-white border-t border-gray-100 p-6 shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
           <div className="flex justify-between items-center mb-5">
             <span className="font-serif italic text-xl text-gray-900">Total</span>
@@ -117,7 +117,7 @@ export const OrderNotepad: React.FC<Props> = ({
           
           <div className="space-y-3">
             <a
-              href={`tel:${phoneNumber}`}
+              href={`tel:${telLink}`}
               className="w-full py-4 rounded-2xl flex items-center justify-center gap-3 font-black uppercase text-xs tracking-widest transition-all shadow-xl active:scale-95 bg-[#E74C3C] text-white hover:bg-[#C0392B] shadow-[#E74C3C]/30"
             >
               <Phone size={20} />
