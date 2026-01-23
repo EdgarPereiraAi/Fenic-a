@@ -14,16 +14,27 @@ import { Search, QrCode, Phone, ChevronDown, Unlock, ClipboardList, ArrowRight, 
 const PHONE_NUMBER = "281325175"; 
 const FORMATTED_PHONE = "281 325 175";
 
-const OrderButtons: React.FC = () => {
+interface OrderButtonsProps {
+  onOpenQR: () => void;
+}
+
+const OrderButtons: React.FC<OrderButtonsProps> = ({ onOpenQR }) => {
   return (
-    <div className="flex flex-row gap-3 w-full max-w-sm mx-auto my-6 px-4">
+    <div className="flex flex-row gap-3 w-full max-w-lg mx-auto my-6 px-4">
       <a
         href={`tel:+351${PHONE_NUMBER}`}
-        className="flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-[#E74C3C] text-white hover:bg-[#C0392B] transition-all duration-300 font-black shadow-lg shadow-[#E74C3C]/40 hover:scale-105 active:scale-95 text-sm uppercase tracking-widest"
+        className="flex-[2] flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-[#E74C3C] text-white hover:bg-[#C0392B] transition-all duration-300 font-black shadow-lg shadow-[#E74C3C]/40 hover:scale-105 active:scale-95 text-sm uppercase tracking-widest"
       >
         <Phone size={20} />
-        Ligar: {FORMATTED_PHONE}
+        {FORMATTED_PHONE}
       </a>
+      <button
+        onClick={onOpenQR}
+        className="flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 transition-all duration-300 font-black shadow-lg hover:scale-105 active:scale-95 text-xs uppercase tracking-widest"
+      >
+        <QrCode size={18} className="text-[#E74C3C]" />
+        QR Code
+      </button>
     </div>
   );
 };
@@ -221,7 +232,7 @@ const App: React.FC = () => {
       </header>
 
       <div className="max-w-4xl mx-auto -mt-12 relative z-30">
-        <OrderButtons />
+        <OrderButtons onOpenQR={() => setIsQRModalOpen(true)} />
       </div>
 
       {isAdmin && (
