@@ -6,37 +6,24 @@ import { LanguageSelector } from './components/LanguageSelector';
 import { QRCodeModal } from './components/QRCodeModal';
 import { PrintMenuModal } from './components/PrintMenuModal';
 import { AdminLoginModal } from './components/AdminLoginModal';
+import { AdminSettingsModal } from './components/AdminSettingsModal';
 import { OrderNotepad } from './components/OrderNotepad';
 import { Language, MenuItem, CartItem } from './types';
-import { Search, QrCode, Phone, ChevronDown, MessageCircle, Unlock, ClipboardList, ArrowRight } from 'lucide-react';
+import { Search, QrCode, Phone, ChevronDown, Unlock, ClipboardList, ArrowRight, Settings, Printer } from 'lucide-react';
 
-// Número local para exibição e links
 const PHONE_NUMBER = "281325175"; 
 const FORMATTED_PHONE = "281 325 175";
-const WHATSAPP_NUMBER = "+351281325175";
 
 const OrderButtons: React.FC = () => {
-  const handleWhatsApp = () => {
-    const text = encodeURIComponent(`Olá! Gostaria de consultar o menu e fazer um pedido na Pizzaria Fenícia.`);
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${text}`, '_blank');
-  };
-
   return (
-    <div className="flex flex-row gap-3 w-full max-w-md mx-auto my-6 px-4">
+    <div className="flex flex-row gap-3 w-full max-w-sm mx-auto my-6 px-4">
       <a
         href={`tel:+351${PHONE_NUMBER}`}
-        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#E74C3C] text-white hover:bg-[#C0392B] transition-all duration-300 font-black shadow-lg shadow-[#E74C3C]/40 hover:scale-105 active:scale-95 text-xs uppercase tracking-widest"
+        className="flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-[#E74C3C] text-white hover:bg-[#C0392B] transition-all duration-300 font-black shadow-lg shadow-[#E74C3C]/40 hover:scale-105 active:scale-95 text-sm uppercase tracking-widest"
       >
-        <Phone size={18} />
-        {FORMATTED_PHONE}
+        <Phone size={20} />
+        Ligar: {FORMATTED_PHONE}
       </a>
-      <button
-        onClick={handleWhatsApp}
-        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#27AE60] text-white hover:bg-[#219150] transition-all duration-300 font-black shadow-lg shadow-[#27AE60]/40 hover:scale-105 active:scale-95 text-xs uppercase tracking-widest"
-      >
-        <MessageCircle size={18} />
-        WhatsApp
-      </button>
     </div>
   );
 };
@@ -48,6 +35,7 @@ const App: React.FC = () => {
   const [isQRModalOpen, setIsQRModalOpen] = useState(false);
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isNotepadOpen, setIsNotepadOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -194,19 +182,19 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-[#FAF9F6]">
       <header className="relative h-[85vh] flex items-center justify-center overflow-hidden bg-white">
         <div className="absolute inset-0 z-0 overflow-hidden">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110vw] md:w-[85vh] h-[110vw] md:h-[85vh] opacity-60 md:opacity-80 animate-[spin_80s_linear_infinite]">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110vw] md:w-[85vh] h-[110vw] md:h-[85vh] opacity-100 animate-[spin_80s_linear_infinite]">
             <img 
               src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1200&q=80" 
-              className="w-full h-full object-cover rounded-full shadow-[0_0_150px_rgba(231,76,60,0.4)] saturate-[1.4] brightness-[1.05]" 
+              className="w-full h-full object-cover rounded-full shadow-[0_0_150px_rgba(231,76,60,0.6)] saturate-[1.8] contrast-[1.2] brightness-[1.1]" 
               alt="Pizza" 
             />
           </div>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2)_0%,white_85%)] z-[1]"></div>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05)_0%,white_85%)] z-[1]"></div>
         </div>
 
         <div className="relative z-10 text-center px-4 max-w-4xl animate-in fade-in duration-1000">
           <div className="relative mb-14 transform hover:scale-[1.02] transition-transform duration-700 cursor-default">
-            <div className="bg-white/80 backdrop-blur-md p-10 md:p-16 rounded-[4rem] border border-white shadow-[0_40px_100px_rgba(0,0,0,0.12)] relative overflow-hidden group">
+            <div className="bg-white/80 backdrop-blur-md p-10 md:p-16 rounded-[4rem] border border-white shadow-[0_40px_100px_rgba(0,0,0,0.15)] relative overflow-hidden group">
               <h1 className="text-7xl md:text-[12rem] leading-[0.8] font-serif tracking-tighter filter drop-shadow-[0_4px_4px_rgba(0,0,0,0.15)]">
                 <span className="text-[#E74C3C] block mb-2">Pizzeria</span>
                 <span className="text-[#27AE60] block -mt-4 md:-mt-8">Fenicia</span>
@@ -219,7 +207,7 @@ const App: React.FC = () => {
           </div>
           
           <div className="flex flex-col items-center gap-10">
-            <p className="text-gray-700 text-lg md:text-2xl font-serif italic tracking-wide max-w-lg leading-relaxed font-bold">
+            <p className="text-gray-900 text-lg md:text-2xl font-serif italic tracking-wide max-w-lg leading-relaxed font-black">
               "A verdadeira essência italiana no coração do Algarve."
             </p>
             <div className="scale-110">
@@ -227,7 +215,7 @@ const App: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce text-gray-400">
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce text-gray-700">
            <ChevronDown size={32} />
         </div>
       </header>
@@ -237,9 +225,19 @@ const App: React.FC = () => {
       </div>
 
       {isAdmin && (
-        <div className="bg-[#FF5733] text-white py-2 text-center sticky top-0 z-[60] font-black text-xs shadow-xl flex items-center justify-center gap-4 uppercase tracking-[0.2em]">
-          <Unlock size={14} /> Modo Gestão Ativo
-          <button onClick={handleLogout} className="bg-white text-[#FF5733] px-3 py-1 rounded-full text-[9px] font-black hover:bg-black hover:text-white transition-colors">Sair</button>
+        <div className="bg-[#FF5733] text-white py-2 text-center sticky top-0 z-[60] font-black text-xs shadow-xl flex items-center justify-center gap-6 uppercase tracking-[0.2em]">
+          <div className="flex items-center gap-2">
+            <Unlock size={14} /> Modo Gestão Ativo
+          </div>
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => setIsSettingsModalOpen(true)}
+              className="bg-white/20 hover:bg-white/30 text-white px-4 py-1.5 rounded-full flex items-center gap-2 transition-all border border-white/20"
+            >
+              <Settings size={12} /> Alterar Senha
+            </button>
+            <button onClick={handleLogout} className="bg-white text-[#FF5733] px-4 py-1.5 rounded-full hover:bg-black hover:text-white transition-all shadow-md">Sair</button>
+          </div>
         </div>
       )}
 
@@ -335,6 +333,13 @@ const App: React.FC = () => {
           </button>
         )}
         <button
+          onClick={() => setIsPrintModalOpen(true)}
+          className="p-5 bg-[#D4AF37] text-white rounded-[2rem] shadow-[0_20px_40px_rgba(212,175,55,0.4)] hover:scale-110 transition-all active:scale-90 group"
+          title="Imprimir Menu"
+        >
+          <Printer size={28} className="group-hover:rotate-12 transition-transform" />
+        </button>
+        <button
           onClick={() => setIsQRModalOpen(true)}
           className="p-5 bg-white text-[#E74C3C] rounded-[2rem] shadow-[0_20px_40px_rgba(0,0,0,0.1)] border border-gray-100 hover:scale-110 transition-all active:scale-90 group"
         >
@@ -351,6 +356,7 @@ const App: React.FC = () => {
       <QRCodeModal isOpen={isQRModalOpen} onClose={() => setIsQRModalOpen(false)} />
       <PrintMenuModal isOpen={isPrintModalOpen} onClose={() => setIsPrintModalOpen(false)} menuData={processedMenu} lang={lang} />
       <AdminLoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} onLogin={handleLogin} />
+      <AdminSettingsModal isOpen={isSettingsModalOpen} onClose={() => setIsSettingsModalOpen(false)} />
       
       <OrderNotepad 
         isOpen={isNotepadOpen} 
