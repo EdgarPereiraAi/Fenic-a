@@ -3,38 +3,27 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { MENU_DATA } from './data';
 import { MenuItemCard } from './components/MenuItemCard';
 import { LanguageSelector } from './components/LanguageSelector';
-import { QRCodeModal } from './components/QRCodeModal';
 import { PrintMenuModal } from './components/PrintMenuModal';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { AdminSettingsModal } from './components/AdminSettingsModal';
 import { OrderNotepad } from './components/OrderNotepad';
+import { QRCodeModal } from './components/QRCodeModal';
 import { Language, MenuItem, CartItem } from './types';
-import { Search, QrCode, Phone, ChevronDown, Unlock, ClipboardList, ArrowRight, Settings, Printer } from 'lucide-react';
+import { Search, Phone, ChevronDown, Unlock, ClipboardList, ArrowRight, Settings, Printer, QrCode } from 'lucide-react';
 
 const PHONE_NUMBER = "281325175"; 
 const FORMATTED_PHONE = "281 325 175";
 
-interface OrderButtonsProps {
-  onOpenQR: () => void;
-}
-
-const OrderButtons: React.FC<OrderButtonsProps> = ({ onOpenQR }) => {
+const OrderButtons: React.FC = () => {
   return (
     <div className="flex flex-row gap-3 w-full max-w-lg mx-auto my-6 px-4">
       <a
         href={`tel:+351${PHONE_NUMBER}`}
-        className="flex-[2] flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-[#E74C3C] text-white hover:bg-[#C0392B] transition-all duration-300 font-black shadow-lg shadow-[#E74C3C]/40 hover:scale-105 active:scale-95 text-sm uppercase tracking-widest"
+        className="flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-[#E74C3C] text-white hover:bg-[#C0392B] transition-all duration-300 font-black shadow-lg shadow-[#E74C3C]/40 hover:scale-105 active:scale-95 text-sm uppercase tracking-widest"
       >
         <Phone size={20} />
         {FORMATTED_PHONE}
       </a>
-      <button
-        onClick={onOpenQR}
-        className="flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 transition-all duration-300 font-black shadow-lg hover:scale-105 active:scale-95 text-xs uppercase tracking-widest"
-      >
-        <QrCode size={18} className="text-[#E74C3C]" />
-        QR Code
-      </button>
     </div>
   );
 };
@@ -43,8 +32,8 @@ const App: React.FC = () => {
   const [lang, setLang] = useState<Language>('pt');
   const [activeCategory, setActiveCategory] = useState(MENU_DATA[0].id);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isQRModalOpen, setIsQRModalOpen] = useState(false);
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
+  const [isQRCodeModalOpen, setIsQRCodeModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isNotepadOpen, setIsNotepadOpen] = useState(false);
@@ -232,7 +221,7 @@ const App: React.FC = () => {
       </header>
 
       <div className="max-w-4xl mx-auto -mt-12 relative z-30">
-        <OrderButtons onOpenQR={() => setIsQRModalOpen(true)} />
+        <OrderButtons />
       </div>
 
       {isAdmin && (
@@ -344,17 +333,18 @@ const App: React.FC = () => {
           </button>
         )}
         <button
+          onClick={() => setIsQRCodeModalOpen(true)}
+          className="p-5 bg-[#27AE60] text-white rounded-[2rem] shadow-[0_20px_40px_rgba(39,174,96,0.4)] hover:scale-110 transition-all active:scale-90 group"
+          title="Partilhar QR Code"
+        >
+          <QrCode size={28} className="group-hover:rotate-12 transition-transform" />
+        </button>
+        <button
           onClick={() => setIsPrintModalOpen(true)}
           className="p-5 bg-[#D4AF37] text-white rounded-[2rem] shadow-[0_20px_40px_rgba(212,175,55,0.4)] hover:scale-110 transition-all active:scale-90 group"
           title="Imprimir Menu"
         >
           <Printer size={28} className="group-hover:rotate-12 transition-transform" />
-        </button>
-        <button
-          onClick={() => setIsQRModalOpen(true)}
-          className="p-5 bg-white text-[#E74C3C] rounded-[2rem] shadow-[0_20px_40px_rgba(0,0,0,0.1)] border border-gray-100 hover:scale-110 transition-all active:scale-90 group"
-        >
-          <QrCode size={28} className="group-hover:rotate-[-12deg] transition-transform" />
         </button>
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
@@ -364,8 +354,8 @@ const App: React.FC = () => {
         </button>
       </div>
 
-      <QRCodeModal isOpen={isQRModalOpen} onClose={() => setIsQRModalOpen(false)} />
       <PrintMenuModal isOpen={isPrintModalOpen} onClose={() => setIsPrintModalOpen(false)} menuData={processedMenu} lang={lang} />
+      <QRCodeModal isOpen={isQRCodeModalOpen} onClose={() => setIsQRCodeModalOpen(false)} />
       <AdminLoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} onLogin={handleLogin} />
       <AdminSettingsModal isOpen={isSettingsModalOpen} onClose={() => setIsSettingsModalOpen(false)} />
       

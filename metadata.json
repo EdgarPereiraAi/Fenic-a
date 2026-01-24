@@ -1,6 +1,6 @@
 {
   "name": "Pizzaria Fenícia - Menu Digital",
-  "description": "Menu digital moderno e otimizado para dispositivos móveis com suporte a QR Code e pedidos via WhatsApp.",
+  "description": "Menu digital moderno e otimizado para dispositivos móveis com pedidos via WhatsApp.",
   "requestFramePermissions": [
     "camera"
   ]

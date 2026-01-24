@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { X, Printer, Layout, Columns as ColumnsIcon, Maximize, Image as ImageIcon, Droplets, Type, Check, RectangleHorizontal } from 'lucide-react';
 import { Category, Language } from '../types';
-import { QRCodeSVG } from 'qrcode.react';
 
 interface Props {
   isOpen: boolean;
@@ -141,7 +140,7 @@ export const PrintMenuModal: React.FC<Props> = ({ isOpen, onClose, menuData, lan
               </div>
             </div>
 
-            {/* Colunas - Agora com 4 Colunas */}
+            {/* Colunas */}
             <div className="space-y-1.5">
               <h3 className="text-gray-400 font-black uppercase tracking-widest text-[8px] flex items-center gap-1.5">
                 <ColumnsIcon size={10} /> Colunas
@@ -207,7 +206,7 @@ export const PrintMenuModal: React.FC<Props> = ({ isOpen, onClose, menuData, lan
           }}
         >
           <div className="flex flex-col h-full bg-white">
-            {/* Header Section - Título Ainda Mais Pequeno e Elegante */}
+            {/* Header Section */}
             <div className="text-center mb-8 w-full">
               <p className="text-[#D4AF37] font-serif text-lg tracking-[0.3em] mb-0.5 uppercase">Cucina Italiana</p>
               <h1 className="text-5xl text-[#E74C3C] font-serif leading-[0.8] tracking-tighter">Pizzeria</h1>
@@ -269,10 +268,6 @@ export const PrintMenuModal: React.FC<Props> = ({ isOpen, onClose, menuData, lan
                 <div className="text-left">
                   <p className="text-[6px] font-black uppercase text-[#1D3C18]">Tavira, Portugal</p>
                   <p className="text-[6px] font-bold text-gray-500">T: 281 325 175</p>
-                </div>
-                <div className="flex flex-col items-center">
-                  <QRCodeSVG value={window.location.origin} size={35} />
-                  <p className="text-[5px] font-black mt-0.5">MENU DIGITAL</p>
                 </div>
                 <div className="text-right">
                   <p className="text-[6px] font-black uppercase text-[#1D3C18]">Buon Appetito</p>

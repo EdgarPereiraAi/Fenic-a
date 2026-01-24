@@ -1,21 +1,25 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import { X, Printer, Share2, Maximize, CreditCard, Layout } from 'lucide-react';
+import { X, Share2, Copy, Check, Printer } from 'lucide-react';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
 }
 
-type QRPrintSize = 'CARD' | 'TABLE' | 'POSTER';
-
 export const QRCodeModal: React.FC<Props> = ({ isOpen, onClose }) => {
-  const [printSize, setPrintSize] = useState<QRPrintSize>('TABLE');
+  const [copied, setCopied] = React.useState(false);
   
   if (!isOpen) return null;
 
-  const currentUrl = window.location.href;
+  const currentUrl = window.location.origin;
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(currentUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -34,126 +38,133 @@ export const QRCodeModal: React.FC<Props> = ({ isOpen, onClose }) => {
     window.print();
   };
 
-  const getQRSize = () => {
-    switch(printSize) {
-      case 'CARD': return 120;
-      case 'POSTER': return 400;
-      default: return 220;
-    }
-  };
-
-  const getLabel = () => {
-    switch(printSize) {
-      case 'CARD': return 'Tamanho Cartão de Visita';
-      case 'POSTER': return 'Tamanho Poster / Parede';
-      default: return 'Tamanho Standard para Mesa';
-    }
-  };
-
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md print:bg-white print:p-0 overflow-hidden">
-      {/* Control Panel (Hidden on Print) */}
-      <div className="bg-white rounded-[3rem] w-full max-w-sm overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.5)] relative animate-in fade-in zoom-in duration-500 print:hidden">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300 print:bg-white print:static print:p-0">
+      {/* Interface do Modal (Escondida na Impressão) */}
+      <div className="bg-white rounded-[3rem] w-full max-w-sm overflow-hidden shadow-2xl relative animate-in zoom-in duration-500 print:hidden">
         <button 
           onClick={onClose}
-          className="absolute top-6 right-6 p-3 rounded-full bg-gray-100 hover:bg-[#E74C3C] hover:text-white text-gray-500 transition-all active:scale-90"
+          className="absolute top-6 right-6 p-2 rounded-full bg-gray-50 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-all z-10"
         >
-          <X size={24} />
+          <X size={20} />
         </button>
 
-        <div className="p-8 flex flex-col items-center text-center">
-          <div className="w-16 h-2 bg-[#FF5733] rounded-full mb-6 shadow-sm"></div>
-          <h2 className="text-3xl font-black text-gray-900 mb-2 tracking-tight">Imprimir QR Code</h2>
-          <p className="text-gray-500 text-xs font-medium mb-8">Escolha o formato ideal para o seu estabelecimento.</p>
-          
-          {/* Format Selector */}
-          <div className="grid grid-cols-3 gap-2 w-full mb-8">
-            <button 
-              onClick={() => setPrintSize('CARD')}
-              className={`flex flex-col items-center gap-2 p-3 rounded-2xl border-2 transition-all ${printSize === 'CARD' ? 'border-[#FF5733] bg-[#FF5733]/5 text-[#FF5733]' : 'border-gray-100 text-gray-400'}`}
-            >
-              <CreditCard size={20} />
-              <span className="text-[9px] font-black uppercase">Cartão</span>
-            </button>
-            <button 
-              onClick={() => setPrintSize('TABLE')}
-              className={`flex flex-col items-center gap-2 p-3 rounded-2xl border-2 transition-all ${printSize === 'TABLE' ? 'border-[#FF5733] bg-[#FF5733]/5 text-[#FF5733]' : 'border-gray-100 text-gray-400'}`}
-            >
-              <Layout size={20} />
-              <span className="text-[9px] font-black uppercase">Mesa</span>
-            </button>
-            <button 
-              onClick={() => setPrintSize('POSTER')}
-              className={`flex flex-col items-center gap-2 p-3 rounded-2xl border-2 transition-all ${printSize === 'POSTER' ? 'border-[#FF5733] bg-[#FF5733]/5 text-[#FF5733]' : 'border-gray-100 text-gray-400'}`}
-            >
-              <Maximize size={20} />
-              <span className="text-[9px] font-black uppercase">Parede</span>
-            </button>
+        <div className="p-10 flex flex-col items-center text-center">
+          <div className="mb-6">
+            <h2 className="text-3xl font-serif font-black text-gray-900">QR Code</h2>
+            <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mt-1">Partilhe ou imprima o seu menu</p>
           </div>
 
-          <div className="bg-white p-6 rounded-[2rem] shadow-xl border-2 border-dashed border-gray-100 mb-8 transform hover:scale-105 transition-transform duration-500">
+          <div className="p-6 bg-white border-2 border-gray-50 rounded-[2.5rem] shadow-sm mb-8">
             <QRCodeSVG 
               value={currentUrl} 
-              size={140} 
+              size={180} 
               level="H" 
-              includeMargin={true}
-              imageSettings={{
-                src: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=64&h=64&fit=crop&auto=format",
-                height: 30,
-                width: 30,
-                excavate: true,
-              }}
+              includeMargin={false}
+              bgColor="#ffffff"
+              fgColor="#000000"
             />
           </div>
 
-          <div className="flex gap-4 w-full">
-            <button 
-              onClick={handleShare}
-              className="flex-1 flex items-center justify-center gap-3 py-4 px-6 rounded-2xl bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all font-black uppercase text-[10px] tracking-widest shadow-sm active:scale-95"
-            >
-              <Share2 size={16} />
-              Partilhar
-            </button>
-            <button 
-              onClick={handlePrint}
-              className="flex-1 flex items-center justify-center gap-3 py-4 px-6 rounded-2xl bg-[#FF5733] text-white hover:bg-[#E64A19] transition-all font-black uppercase text-[10px] tracking-widest shadow-xl shadow-[#FF5733]/30 active:scale-95"
-            >
-              <Printer size={16} />
-              Imprimir
-            </button>
+          <div className="grid grid-cols-1 gap-3 w-full">
+            <div className="flex gap-3">
+              <button 
+                onClick={handleCopy}
+                className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all ${
+                  copied ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {copied ? <Check size={14} /> : <Copy size={14} />}
+                {copied ? 'Copiado!' : 'Copiar'}
+              </button>
+              
+              <button 
+                onClick={handlePrint}
+                className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl bg-gray-900 text-white font-black uppercase text-[10px] tracking-widest hover:bg-black transition-all"
+              >
+                <Printer size={14} />
+                Imprimir
+              </button>
+            </div>
+            
+            {navigator.share && (
+              <button 
+                onClick={handleShare}
+                className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl bg-[#E74C3C] text-white font-black uppercase text-[10px] tracking-widest hover:bg-[#C0392B] transition-all"
+              >
+                <Share2 size={16} />
+                Enviar Menu
+              </button>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Actual Printable Element (Visible only on print) */}
-      <div className="hidden print:flex flex-col items-center justify-center w-full h-screen bg-white">
-        <div className="p-12 border-[3px] border-black flex flex-col items-center">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-serif text-[#E74C3C]">Pizzeria Fenicia</h1>
-            <p className="text-[10px] font-black uppercase tracking-[0.5em] mt-1">Menu Digital</p>
+      {/* ÁREA DE IMPRESSÃO (Visível apenas no preview/folha) */}
+      <div id="qr-printable" className="hidden print:flex flex-col items-center justify-center w-full min-h-screen bg-white text-black p-0 m-0">
+        <div className="w-[85%] border-[1px] border-gray-100 p-16 rounded-[4rem] flex flex-col items-center text-center bg-white shadow-sm">
+          <div className="mb-12">
+            <p className="text-[#D4AF37] font-serif text-2xl tracking-[0.4em] mb-4 uppercase">Cucina Italiana</p>
+            <h1 className="text-7xl font-serif text-[#E74C3C] mb-1 leading-none">Pizzeria</h1>
+            <h1 className="text-8xl font-serif text-[#27AE60] mb-6 leading-none">Fenicia</h1>
+            <div className="h-1.5 w-32 bg-[#E74C3C] mx-auto rounded-full opacity-30 mb-8"></div>
+            <p className="text-[18px] font-black uppercase tracking-[1em] text-gray-400">Menu Digital</p>
           </div>
           
-          <QRCodeSVG 
-            value={currentUrl} 
-            size={getQRSize()} 
-            level="H" 
-            includeMargin={true}
-          />
+          <div className="p-4 border-[10px] border-[#3498DB] bg-white mb-12 shadow-sm">
+            <QRCodeSVG 
+              value={currentUrl} 
+              size={400} 
+              level="H" 
+              includeMargin={true}
+              bgColor="#ffffff"
+              fgColor="#000000"
+            />
+          </div>
           
-          <div className="mt-8 text-center">
-            <p className="text-lg font-bold">Leia o código para ver o menu</p>
-            <p className="text-xs text-gray-400 mt-2 uppercase tracking-widest italic">{getLabel()}</p>
+          <div className="space-y-6">
+            <p className="text-4xl font-serif italic text-gray-800">Aponte a câmara para ver o nosso menu</p>
+          </div>
+
+          <div className="mt-20 pt-8 border-t border-gray-100 w-full flex justify-between items-center opacity-30 px-6">
+             <span className="text-[12px] font-black uppercase tracking-[0.2em]">Tavira • Algarve • Portugal</span>
+             <span className="text-[12px] font-black uppercase tracking-[0.2em]">Buon Appetito</span>
           </div>
         </div>
       </div>
 
       <style>{`
         @media print {
-          body > *:not(.print-root) {
+          body > *:not(.fixed.z-\\[200\\]) {
             display: none !important;
           }
-          .print-visible {
+          
+          .fixed.z-\\[200\\] {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: auto !important;
+            display: block !important;
+            background: white !important;
+            backdrop-filter: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+          }
+
+          #qr-printable {
             display: flex !important;
+            visibility: visible !important;
+          }
+
+          @page {
+            size: auto;
+            margin: 0mm;
+          }
+
+          * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
         }
       `}</style>
