@@ -339,13 +339,18 @@ const App: React.FC = () => {
         >
           <QrCode size={28} className="group-hover:rotate-12 transition-transform" />
         </button>
-        <button
-          onClick={() => setIsPrintModalOpen(true)}
-          className="p-5 bg-[#D4AF37] text-white rounded-[2rem] shadow-[0_20px_40px_rgba(212,175,55,0.4)] hover:scale-110 transition-all active:scale-90 group"
-          title="Imprimir Menu"
-        >
-          <Printer size={28} className="group-hover:rotate-12 transition-transform" />
-        </button>
+        
+        {/* Botão de Impressão Restrito ao Administrador */}
+        {isAdmin && (
+          <button
+            onClick={() => setIsPrintModalOpen(true)}
+            className="p-5 bg-[#D4AF37] text-white rounded-[2rem] shadow-[0_20px_40px_rgba(212,175,55,0.4)] hover:scale-110 transition-all active:scale-90 group"
+            title="Imprimir Menu"
+          >
+            <Printer size={28} className="group-hover:rotate-12 transition-transform" />
+          </button>
+        )}
+        
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           className={`p-5 bg-gray-900 text-white rounded-[2rem] shadow-xl transition-all duration-700 ${isScrolled ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0 pointer-events-none'}`}
