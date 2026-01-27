@@ -1,33 +1,46 @@
 
 import React, { useState } from 'react';
-import { X, Key, Save, CheckCircle2 } from 'lucide-react';
+import { X, Key, Save, CheckCircle2, Globe } from 'lucide-react';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  onApiUrlChange?: (url: string) => void;
+  currentApiUrl?: string;
 }
 
-export const AdminSettingsModal: React.FC<Props> = ({ isOpen, onClose }) => {
+export const AdminSettingsModal: React.FC<Props> = ({ isOpen, onClose, onApiUrlChange, currentApiUrl }) => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [apiUrl, setApiUrl] = useState(currentApiUrl || '');
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   if (!isOpen) return null;
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newPassword && newPassword === confirmPassword) {
-      localStorage.setItem('admin_password', newPassword);
-      setStatus('success');
-      setNewPassword('');
-      setConfirmPassword('');
-      setTimeout(() => {
-        setStatus('idle');
-        onClose();
-      }, 2000);
-    } else {
-      setStatus('error');
+    
+    // Guardar URL da API
+    localStorage.setItem('pizzaria_fenicia_api_url', apiUrl);
+    onApiUrlChange?.(apiUrl);
+
+    // Guardar Palavra-passe se preenchida
+    if (newPassword) {
+      if (newPassword === confirmPassword) {
+        localStorage.setItem('admin_password', newPassword);
+        setNewPassword('');
+        setConfirmPassword('');
+      } else {
+        setStatus('error');
+        return;
+      }
     }
+
+    setStatus('success');
+    setTimeout(() => {
+      setStatus('idle');
+      onClose();
+    }, 2000);
   };
 
   return (
@@ -35,8 +48,8 @@ export const AdminSettingsModal: React.FC<Props> = ({ isOpen, onClose }) => {
       <div className="bg-white rounded-[2rem] w-full max-w-sm overflow-hidden shadow-2xl">
         <div className="p-8 border-b border-gray-100 flex items-center justify-between bg-gray-50">
           <div className="flex items-center gap-3">
-            <Key className="text-[#FF5733]" size={24} />
-            <h2 className="text-xl font-black uppercase tracking-tight">Alterar Senha</h2>
+            <Globe className="text-[#FF5733]" size={24} />
+            <h2 className="text-xl font-black uppercase tracking-tight">Definições</h2>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-gray-200 rounded-full transition-all">
             <X size={20} />
@@ -44,19 +57,39 @@ export const AdminSettingsModal: React.FC<Props> = ({ isOpen, onClose }) => {
         </div>
 
         <form onSubmit={handleSave} className="p-8 space-y-6">
+          {/* Configuração de API */}
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Nova Senha</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1 flex items-center gap-2">
+              <Globe size={10} /> URL da API (Google Sheets)
+            </label>
+            <input 
+              type="text"
+              value={apiUrl}
+              onChange={(e) => setApiUrl(e.target.value)}
+              className="w-full px-4 py-4 bg-gray-50 border-2 border-transparent focus:border-[#FF5733] rounded-2xl outline-none font-bold transition-all text-xs"
+              placeholder="https://script.google.com/macros/s/.../exec"
+            />
+            <p className="text-[8px] text-gray-400 px-1 italic">Deixe vazio para usar apenas os dados locais.</p>
+          </div>
+
+          <div className="h-px bg-gray-100 w-full" />
+
+          {/* Alteração de Password */}
+          <div className="space-y-2">
+            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1 flex items-center gap-2">
+              <Key size={10} /> Nova Palavra-passe
+            </label>
             <input 
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               className="w-full px-4 py-4 bg-gray-50 border-2 border-transparent focus:border-[#FF5733] rounded-2xl outline-none font-bold transition-all"
-              placeholder="Digite a nova senha"
+              placeholder="Deixe em branco para manter"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Confirmar Senha</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Confirmar Nova Palavra-passe</label>
             <input 
               type="password"
               value={confirmPassword}
@@ -70,7 +103,7 @@ export const AdminSettingsModal: React.FC<Props> = ({ isOpen, onClose }) => {
 
           {status === 'success' && (
             <div className="flex items-center justify-center gap-2 text-green-600 font-black uppercase text-xs animate-in slide-in-from-top">
-              <CheckCircle2 size={16} /> Senha Alterada com Sucesso
+              <CheckCircle2 size={16} /> Configurações Guardadas
             </div>
           )}
 

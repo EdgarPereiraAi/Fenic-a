@@ -9,10 +9,23 @@ interface Props {
   isAdmin?: boolean;
   onImageUpdate?: (id: string, base64: string) => void;
   onPriceUpdate?: (id: string, price: string) => void;
+  onNameUpdate?: (id: string, name: string) => void;
+  onNumberUpdate?: (id: string, number: string) => void;
+  onIngredientsUpdate?: (text: string) => void;
   onAddToCart?: (item: MenuItem) => void;
 }
 
-export const MenuItemCard: React.FC<Props> = ({ item, lang, isAdmin, onImageUpdate, onPriceUpdate, onAddToCart }) => {
+export const MenuItemCard: React.FC<Props> = ({ 
+  item, 
+  lang, 
+  isAdmin, 
+  onImageUpdate, 
+  onPriceUpdate, 
+  onNameUpdate, 
+  onNumberUpdate,
+  onIngredientsUpdate,
+  onAddToCart 
+}) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageClick = () => {
@@ -88,14 +101,47 @@ export const MenuItemCard: React.FC<Props> = ({ item, lang, isAdmin, onImageUpda
       
       <div className="flex-grow flex flex-col justify-center min-w-0">
         <div className="flex justify-between items-start gap-3">
-          <div className="flex flex-col min-w-0">
-            <h3 className="text-base sm:text-2xl font-black text-gray-900 truncate tracking-tighter flex items-center group-hover:text-[#E74C3C] transition-colors">
-              {item.number && <span className="text-[10px] font-black text-white bg-[#E74C3C] px-2 py-1 rounded-lg mr-2 shadow-sm italic">#{item.number}</span>}
-              {item.name}
-            </h3>
-            <p className="text-gray-400 text-xs sm:text-sm mt-2 line-clamp-2 italic font-medium leading-relaxed pr-4">
-              {item.ingredients[lang]}
-            </p>
+          <div className="flex flex-col min-w-0 w-full">
+            <div className="flex items-center gap-2 mb-1">
+              {isAdmin ? (
+                <div className="flex items-center gap-2 w-full">
+                  <span className="text-[10px] font-black text-white bg-[#E74C3C] px-1 py-1 rounded-lg shadow-sm italic flex items-center">
+                    #<input 
+                      type="text" 
+                      value={item.number || ''} 
+                      onChange={(e) => onNumberUpdate?.(item.id, e.target.value)}
+                      className="bg-transparent border-none focus:ring-0 w-6 text-center outline-none text-white font-black"
+                      placeholder="?"
+                    />
+                  </span>
+                  <input 
+                    type="text" 
+                    value={item.name} 
+                    onChange={(e) => onNameUpdate?.(item.id, e.target.value)}
+                    className="text-base sm:text-2xl font-black text-gray-900 bg-white/50 border-b-2 border-[#E74C3C]/10 focus:border-[#E74C3C] focus:outline-none w-full px-2 rounded-t-lg transition-colors"
+                  />
+                </div>
+              ) : (
+                <h3 className="text-base sm:text-2xl font-black text-gray-900 truncate tracking-tighter flex items-center group-hover:text-[#E74C3C] transition-colors">
+                  {item.number && <span className="text-[10px] font-black text-white bg-[#E74C3C] px-2 py-1 rounded-lg mr-2 shadow-sm italic">#{item.number}</span>}
+                  {item.name}
+                </h3>
+              )}
+            </div>
+            
+            {isAdmin ? (
+              <textarea 
+                value={item.ingredients[lang]} 
+                onChange={(e) => onIngredientsUpdate?.(e.target.value)}
+                className="text-gray-600 text-xs sm:text-sm mt-2 italic font-medium leading-relaxed p-2 bg-white/50 border-2 border-transparent focus:border-[#E74C3C]/20 focus:outline-none rounded-xl w-full resize-none transition-all"
+                rows={2}
+                placeholder="Descreva os ingredientes..."
+              />
+            ) : (
+              <p className="text-gray-400 text-xs sm:text-sm mt-2 line-clamp-2 italic font-medium leading-relaxed pr-4">
+                {item.ingredients[lang]}
+              </p>
+            )}
           </div>
           
           <div className="flex flex-col items-end gap-3 flex-shrink-0">

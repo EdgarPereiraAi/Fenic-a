@@ -9,6 +9,7 @@ export interface MenuItem {
     en: string;
     fr: string;
     de: string;
+    es: string;
   };
   image: string;
 }
@@ -23,4 +24,4 @@ export interface CartItem extends MenuItem {
   quantity: number;
 }
 
-export type Language = 'pt' | 'en' | 'fr' | 'de';
+export type Language = 'pt' | 'en' | 'fr' | 'de' | 'es';

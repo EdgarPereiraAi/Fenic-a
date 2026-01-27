@@ -8,8 +8,8 @@ import { AdminLoginModal } from './components/AdminLoginModal';
 import { AdminSettingsModal } from './components/AdminSettingsModal';
 import { OrderNotepad } from './components/OrderNotepad';
 import { QRCodeModal } from './components/QRCodeModal';
-import { Language, MenuItem, CartItem } from './types';
-import { Search, Phone, ChevronDown, Unlock, ClipboardList, ArrowRight, Settings, Printer, QrCode } from 'lucide-react';
+import { Language, MenuItem, CartItem, Category } from './types';
+import { Search, Phone, ChevronDown, Unlock, ClipboardList, ArrowRight, Settings, Printer, QrCode, RefreshCcw, MapPin, Clock } from 'lucide-react';
 
 const PHONE_NUMBER = "281325175"; 
 const FORMATTED_PHONE = "281 325 175";
@@ -39,22 +39,54 @@ const App: React.FC = () => {
   const [isNotepadOpen, setIsNotepadOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [apiData, setApiData] = useState<Category[] | null>(null);
   
+  const [apiUrl, setApiUrl] = useState(localStorage.getItem('pizzaria_fenicia_api_url') || '');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [customImages, setCustomImages] = useState<Record<string, string>>({});
   const [customPrices, setCustomPrices] = useState<Record<string, string>>({});
+  const [customNames, setCustomNames] = useState<Record<string, string>>({});
+  const [customNumbers, setCustomNumbers] = useState<Record<string, string>>({});
+  const [customIngredients, setCustomIngredients] = useState<Record<string, Record<Language, string>>>({});
+
+  const fetchMenuFromApi = async () => {
+    if (!apiUrl) return;
+    setIsLoading(true);
+    try {
+      const response = await fetch(apiUrl);
+      if (response.ok) {
+        const data = await response.json();
+        if (Array.isArray(data)) {
+           setApiData(data);
+        }
+      }
+    } catch (error) {
+      console.warn("Sincronização remota indisponível. Usando dados locais.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
+    if (apiUrl) fetchMenuFromApi();
+    
     const savedImages = localStorage.getItem('pizzaria_fenicia_custom_images');
     const savedPrices = localStorage.getItem('pizzaria_fenicia_custom_prices');
+    const savedNames = localStorage.getItem('pizzaria_fenicia_custom_names');
+    const savedNumbers = localStorage.getItem('pizzaria_fenicia_custom_numbers');
+    const savedIngredients = localStorage.getItem('pizzaria_fenicia_custom_ingredients');
     const savedAdminStatus = localStorage.getItem('pizzaria_fenicia_is_admin') === 'true';
     const savedCart = localStorage.getItem('pizzaria_fenicia_cart');
     
     if (savedImages) try { setCustomImages(JSON.parse(savedImages)); } catch (e) {}
     if (savedPrices) try { setCustomPrices(JSON.parse(savedPrices)); } catch (e) {}
+    if (savedNames) try { setCustomNames(JSON.parse(savedNames)); } catch (e) {}
+    if (savedNumbers) try { setCustomNumbers(JSON.parse(savedNumbers)); } catch (e) {}
+    if (savedIngredients) try { setCustomIngredients(JSON.parse(savedIngredients)); } catch (e) {}
     if (savedCart) try { setCartItems(JSON.parse(savedCart)); } catch (e) {}
     setIsAdmin(savedAdminStatus);
-  }, []);
+  }, [apiUrl]);
 
   useEffect(() => {
     localStorage.setItem('pizzaria_fenicia_cart', JSON.stringify(cartItems));
@@ -62,7 +94,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 100);
+      setIsScrolled(window.scrollY > 50);
       const sections = MENU_DATA.map(cat => document.getElementById(cat.id));
       const scrollPos = window.scrollY + 200;
 
@@ -118,6 +150,31 @@ const App: React.FC = () => {
     localStorage.setItem('pizzaria_fenicia_custom_prices', JSON.stringify(newPrices));
   };
 
+  const handleNameUpdate = (id: string, name: string) => {
+    const newNames = { ...customNames, [id]: name };
+    setCustomNames(newNames);
+    localStorage.setItem('pizzaria_fenicia_custom_names', JSON.stringify(newNames));
+  };
+
+  const handleNumberUpdate = (id: string, number: string) => {
+    const newNumbers = { ...customNumbers, [id]: number };
+    setCustomNumbers(newNumbers);
+    localStorage.setItem('pizzaria_fenicia_custom_numbers', JSON.stringify(newNumbers));
+  };
+
+  const handleIngredientsUpdate = (id: string, l: Language, text: string) => {
+    const currentItemIngredients = customIngredients[id] || {};
+    const newIngredients = {
+      ...customIngredients,
+      [id]: {
+        ...currentItemIngredients,
+        [l]: text
+      }
+    };
+    setCustomIngredients(newIngredients);
+    localStorage.setItem('pizzaria_fenicia_custom_ingredients', JSON.stringify(newIngredients));
+  };
+
   const handleLogin = () => {
     setIsAdmin(true);
     localStorage.setItem('pizzaria_fenicia_is_admin', 'true');
@@ -128,16 +185,27 @@ const App: React.FC = () => {
     localStorage.setItem('pizzaria_fenicia_is_admin', 'false');
   };
 
+  const currentMenuSource = apiData || MENU_DATA;
+
   const processedMenu = useMemo(() => {
-    return MENU_DATA.map(cat => ({
+    return currentMenuSource.map(cat => ({
       ...cat,
-      items: cat.items.map(item => ({
-        ...item,
-        image: customImages[item.id] || item.image,
-        price: customPrices[item.id] || item.price
-      }))
+      items: cat.items.map(item => {
+        const itemOverrideIngredients = customIngredients[item.id] || {};
+        return {
+          ...item,
+          image: customImages[item.id] || item.image,
+          price: customPrices[item.id] || item.price,
+          name: customNames[item.id] || item.name,
+          number: customNumbers[item.id] || item.number,
+          ingredients: {
+            ...item.ingredients,
+            ...itemOverrideIngredients
+          }
+        };
+      })
     }));
-  }, [customImages, customPrices]);
+  }, [currentMenuSource, customImages, customPrices, customNames, customNumbers, customIngredients]);
 
   const filteredMenu = useMemo(() => {
     if (!searchTerm) return processedMenu;
@@ -180,22 +248,28 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#FAF9F6]">
+      <div className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 flex justify-center pt-4 px-4 pointer-events-none`}>
+        <div className={`pointer-events-auto scale-110 sm:scale-125 transform transition-all duration-500 ${isScrolled ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-100'}`}>
+          <LanguageSelector currentLang={lang} onLangChange={setLang} />
+        </div>
+      </div>
+
       <header className="relative h-[85vh] flex items-center justify-center overflow-hidden bg-white">
         <div className="absolute inset-0 z-0 overflow-hidden">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110vw] md:w-[85vh] h-[110vw] md:h-[85vh] opacity-100 animate-[spin_80s_linear_infinite]">
             <img 
               src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1200&q=80" 
               className="w-full h-full object-cover rounded-full shadow-[0_0_150px_rgba(231,76,60,0.6)] saturate-[1.8] contrast-[1.2] brightness-[1.1]" 
-              alt="Pizza" 
+              alt="Pizza Background" 
             />
           </div>
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05)_0%,white_85%)] z-[1]"></div>
         </div>
 
-        <div className="relative z-10 text-center px-4 max-w-4xl animate-in fade-in duration-1000">
+        <div className="relative z-10 text-center px-4 max-w-4xl animate-in fade-in duration-1000 mt-20">
           <div className="relative mb-14 transform hover:scale-[1.02] transition-transform duration-700 cursor-default">
             <div className="bg-white/80 backdrop-blur-md p-10 md:p-16 rounded-[4rem] border border-white shadow-[0_40px_100px_rgba(0,0,0,0.15)] relative overflow-hidden group">
-              <h1 className="text-7xl md:text-[12rem] leading-[0.8] font-serif tracking-tighter filter drop-shadow-[0_4px_4px_rgba(0,0,0,0.15)]">
+              <h1 className="text-7xl md:text-[10rem] leading-[0.8] font-serif tracking-tighter filter drop-shadow-[0_4px_4px_rgba(0,0,0,0.15)]">
                 <span className="text-[#E74C3C] block mb-2">Pizzeria</span>
                 <span className="text-[#27AE60] block -mt-4 md:-mt-8">Fenicia</span>
               </h1>
@@ -210,9 +284,6 @@ const App: React.FC = () => {
             <p className="text-gray-900 text-lg md:text-2xl font-serif italic tracking-wide max-w-lg leading-relaxed font-black">
               "A verdadeira essência italiana no coração do Algarve."
             </p>
-            <div className="scale-110">
-               <LanguageSelector currentLang={lang} onLangChange={setLang} />
-            </div>
           </div>
         </div>
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce text-gray-700">
@@ -231,17 +302,24 @@ const App: React.FC = () => {
           </div>
           <div className="flex items-center gap-3">
             <button 
+               onClick={() => { if(apiUrl) fetchMenuFromApi() }}
+               className={`bg-white/20 hover:bg-white/40 p-1.5 rounded-full transition-all ${!apiUrl ? 'opacity-20 cursor-not-allowed' : ''}`}
+               title={apiUrl ? "Atualizar via API" : "Configure o URL nas definições"}
+            >
+              <RefreshCcw size={14} className={isLoading ? 'animate-spin' : ''} />
+            </button>
+            <button 
               onClick={() => setIsSettingsModalOpen(true)}
               className="bg-white/20 hover:bg-white/30 text-white px-4 py-1.5 rounded-full flex items-center gap-2 transition-all border border-white/20"
             >
-              <Settings size={12} /> Alterar Senha
+              <Settings size={12} /> Definições
             </button>
             <button onClick={handleLogout} className="bg-white text-[#FF5733] px-4 py-1.5 rounded-full hover:bg-black hover:text-white transition-all shadow-md">Sair</button>
           </div>
         </div>
       )}
 
-      <div className="sticky top-2 z-40 max-w-xl mx-auto px-4 mt-12 mb-8">
+      <div className="sticky top-20 z-40 max-w-xl mx-auto px-4 mt-12 mb-8">
         <div className="relative group shadow-2xl rounded-[2rem] overflow-hidden bg-white/80 backdrop-blur-xl border border-white/20">
           <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
             <Search className="h-5 w-5 text-gray-400 group-focus-within:text-[#E74C3C] transition-colors" />
@@ -285,7 +363,12 @@ const App: React.FC = () => {
       </div>
 
       <main className="max-w-3xl mx-auto px-4 pb-20">
-        {filteredMenu.length === 0 ? (
+        {isLoading && !apiData ? (
+          <div className="text-center py-20 flex flex-col items-center gap-4">
+             <RefreshCcw size={48} className="animate-spin text-[#E74C3C]" />
+             <p className="text-gray-400 font-black uppercase tracking-widest text-xs">Sincronizando com a nuvem...</p>
+          </div>
+        ) : filteredMenu.length === 0 ? (
           <div className="text-center py-32 opacity-30">
             <Search size={64} className="mx-auto mb-4" strokeWidth={1} />
             <p className="text-gray-500 text-xl font-serif italic">Nenhum sabor encontrado com esse nome.</p>
@@ -309,6 +392,9 @@ const App: React.FC = () => {
                     isAdmin={isAdmin}
                     onImageUpdate={handleImageUpdate}
                     onPriceUpdate={handlePriceUpdate}
+                    onNameUpdate={handleNameUpdate}
+                    onNumberUpdate={handleNumberUpdate}
+                    onIngredientsUpdate={(text) => handleIngredientsUpdate(item.id, lang, text)}
                     onAddToCart={addToCart}
                   />
                 ))}
@@ -340,7 +426,6 @@ const App: React.FC = () => {
           <QrCode size={28} className="group-hover:rotate-12 transition-transform" />
         </button>
         
-        {/* Botão de Impressão Restrito ao Administrador */}
         {isAdmin && (
           <button
             onClick={() => setIsPrintModalOpen(true)}
@@ -362,7 +447,7 @@ const App: React.FC = () => {
       <PrintMenuModal isOpen={isPrintModalOpen} onClose={() => setIsPrintModalOpen(false)} menuData={processedMenu} lang={lang} />
       <QRCodeModal isOpen={isQRCodeModalOpen} onClose={() => setIsQRCodeModalOpen(false)} />
       <AdminLoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} onLogin={handleLogin} />
-      <AdminSettingsModal isOpen={isSettingsModalOpen} onClose={() => setIsSettingsModalOpen(false)} />
+      <AdminSettingsModal isOpen={isSettingsModalOpen} onClose={() => setIsSettingsModalOpen(false)} onApiUrlChange={setApiUrl} currentApiUrl={apiUrl} />
       
       <OrderNotepad 
         isOpen={isNotepadOpen} 
@@ -375,20 +460,40 @@ const App: React.FC = () => {
         phoneNumber={PHONE_NUMBER}
       />
 
-      <footer className="bg-white pt-24 pb-40 border-t border-gray-50 relative overflow-hidden">
+      <footer className="bg-white pt-24 pb-40 border-t border-gray-100 relative overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-[#E74C3C]/5 blur-[100px] rounded-full"></div>
         <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
-          <h3 className="text-5xl text-[#1D3C18] mb-4 font-black italic font-serif tracking-tighter">Pizzeria Fenicia</h3>
-          <p className="text-[#E74C3C] font-black tracking-[0.6em] text-[10px] uppercase mb-16">Tavira • Algarve • Portugal</p>
+          <h3 className="text-5xl md:text-7xl text-[#1D3C18] mb-12 font-black italic font-serif tracking-tighter">Pizzeria Fenicia</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-2xl mx-auto mb-20 text-center">
+            <div className="flex flex-col items-center gap-4 group">
+              <div className="p-4 bg-[#E74C3C]/10 rounded-full text-[#E74C3C] transform transition-transform group-hover:scale-110 duration-500">
+                <MapPin size={28} />
+              </div>
+              <div className="space-y-1">
+                <p className="text-gray-900 font-black text-lg tracking-tight">Largo da Caracolinha, n.8</p>
+                <p className="text-gray-500 font-bold uppercase tracking-[0.2em] text-[11px]">8800-310 Tavira</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center gap-4 group">
+              <div className="p-4 bg-[#27AE60]/10 rounded-full text-[#27AE60] transform transition-transform group-hover:scale-110 duration-500">
+                <Clock size={28} />
+              </div>
+              <div className="space-y-1">
+                <p className="text-[#1D3C18] font-black uppercase tracking-[0.3em] text-[9px] mb-2">Horário de Funcionamento</p>
+                <p className="text-gray-900 font-black text-lg">12h00 às 15h00</p>
+                <p className="text-gray-900 font-black text-lg">19h00 às 22h00</p>
+              </div>
+            </div>
+          </div>
+
           <button 
             onClick={() => isAdmin ? handleLogout() : setIsLoginModalOpen(true)}
             className="text-[9px] text-gray-300 hover:text-[#FF5733] transition-all uppercase tracking-[0.5em] font-black border border-gray-100 px-6 py-3 rounded-full hover:border-[#FF5733]/20"
           >
             {isAdmin ? 'Fechar Painel' : 'Acesso Restrito'}
           </button>
-          <div className="mt-20 opacity-20 hover:opacity-100 transition-opacity duration-1000">
-             <img src="https://cdn-icons-png.flaticon.com/512/1046/1046857.png" className="w-12 h-12 mx-auto grayscale" alt="Pizza Icon" />
-          </div>
         </div>
       </footer>
       <style>{`
