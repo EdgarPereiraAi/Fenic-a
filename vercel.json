@@ -1,4 +1,4 @@
-json
+
 {
   "installCommand": "npm install @vercel/kv",
   "rewrites": [
