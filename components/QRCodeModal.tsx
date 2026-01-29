@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { X, Share2, Copy, Check } from 'lucide-react';
@@ -25,7 +24,7 @@ export const QRCodeModal: React.FC<Props> = ({ isOpen, onClose }) => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'Menu Pizzaria Fenícia',
+          title: 'Menu Pizzeria Fenicia Menu',
           url: currentUrl,
         });
       } catch (err) {

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { X, Printer, Layout, Columns as ColumnsIcon, Maximize, Image as ImageIcon, Droplets, Type, Check, RectangleHorizontal } from 'lucide-react';
 import { Category, Language } from '../types';
@@ -210,7 +209,7 @@ export const PrintMenuModal: React.FC<Props> = ({ isOpen, onClose, menuData, lan
             <div className="text-center mb-8 w-full">
               <p className="text-[#D4AF37] font-serif text-lg tracking-[0.3em] mb-0.5 uppercase">Cucina Italiana</p>
               <h1 className="text-5xl text-[#E74C3C] font-serif leading-[0.8] tracking-tighter">Pizzeria</h1>
-              <h1 className="text-6xl text-[#27AE60] font-serif leading-[0.8] tracking-tighter -mt-1">Fenicia</h1>
+              <h1 className="text-6xl text-[#27AE60] font-serif leading-[0.8] tracking-tighter -mt-1">Fenicia Menu</h1>
               <div className="flex items-center justify-center gap-4 my-3">
                 <div className="h-[1px] w-10 bg-gray-100"></div>
                 <p className="uppercase tracking-[0.4em] text-[7px] font-black text-gray-300">Tavira • Algarve</p>
@@ -271,7 +270,7 @@ export const PrintMenuModal: React.FC<Props> = ({ isOpen, onClose, menuData, lan
                 </div>
                 <div className="text-right">
                   <p className="text-[6px] font-black uppercase text-[#1D3C18]">Buon Appetito</p>
-                  <p className="text-[6px] font-bold text-gray-500 italic">Pizzeria Fenicia</p>
+                  <p className="text-[6px] font-bold text-gray-500 italic">Pizzeria Fenicia Menu</p>
                 </div>
             </div>
           </div>

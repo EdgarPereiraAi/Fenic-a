@@ -1,4 +1,3 @@
-
 import React, { useRef } from 'react';
 import { MenuItem, Language } from '../types';
 import { Camera, Share2, Plus } from 'lucide-react';
@@ -48,8 +47,8 @@ export const MenuItemCard: React.FC<Props> = ({
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
     const shareData = {
-      title: `Pizzaria Fenícia - ${item.name}`,
-      text: `Olha esta delícia: ${item.name} (${item.price}) na Pizzaria Fenícia!`,
+      title: `Pizzeria Fenicia Menu - ${item.name}`,
+      text: `Olha esta delícia: ${item.name} (${item.price}) na Pizzeria Fenicia!`,
       url: `${window.location.origin}${window.location.pathname}#${item.id}`,
     };
 
@@ -138,7 +137,7 @@ export const MenuItemCard: React.FC<Props> = ({
                 placeholder="Descreva os ingredientes..."
               />
             ) : (
-              <p className="text-gray-400 text-xs sm:text-sm mt-2 line-clamp-2 italic font-medium leading-relaxed pr-4">
+              <p className="text-gray-400 text-xs sm:text-sm mt-2 italic font-medium leading-relaxed pr-4">
                 {item.ingredients[lang]}
               </p>
             )}
