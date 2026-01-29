@@ -10,6 +10,7 @@ import { OrderNotepad } from './components/OrderNotepad';
 import { QRCodeModal } from './components/QRCodeModal';
 import { Language, MenuItem, CartItem, Category } from './types';
 import { Search, Phone, ChevronDown, Unlock, ClipboardList, ArrowRight, Settings, Printer, QrCode, RefreshCcw, MapPin, Clock } from 'lucide-react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 const PHONE_NUMBER = "281325175"; 
 const FORMATTED_PHONE = "281 325 175";
@@ -500,6 +501,7 @@ const App: React.FC = () => {
         @keyframes spin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
         @keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
       `}</style>
+      <SpeedInsights />
     </div>
   );
 };
