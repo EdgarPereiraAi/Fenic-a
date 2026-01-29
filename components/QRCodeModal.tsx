@@ -72,7 +72,7 @@ export const QRCodeModal: React.FC<Props> = ({ isOpen, onClose }) => {
               {copied ? 'Link Copiado!' : 'Copiar Link'}
             </button>
             
-            {navigator.share && (
+            {typeof navigator.share === 'function' && (
               <button 
                 onClick={handleShare}
                 className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl bg-[#E74C3C] text-white font-black uppercase text-[10px] tracking-widest hover:bg-[#C0392B] transition-all shadow-lg shadow-[#E74C3C]/20"

@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { MENU_DATA } from './data';
 import { MenuItemCard } from './components/MenuItemCard';
 import { LanguageSelector } from './components/LanguageSelector';
@@ -500,6 +501,7 @@ const App: React.FC = () => {
         @keyframes spin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
         @keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
       `}</style>
+      <SpeedInsights />
     </div>
   );
 };
