@@ -8,6 +8,7 @@ import { OrderNotepad } from './components/OrderNotepad';
 import { QRCodeModal } from './components/QRCodeModal';
 import { Language, MenuItem, CartItem, Category } from './types';
 import { Search, Phone, ChevronDown, Unlock, ClipboardList, ArrowRight, Printer, QrCode, RefreshCcw, MapPin, Clock, CloudUpload, AlertTriangle, CheckCircle } from 'lucide-react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 const PHONE_NUMBER = "281325175"; 
 const FORMATTED_PHONE = "281 325 175";
@@ -306,6 +307,7 @@ const App: React.FC = () => {
           <button onClick={() => isAdmin ? handleLogout() : setIsLoginModalOpen(true)} className="text-[9px] text-gray-300 hover:text-[#FF5733] transition-all uppercase tracking-[0.5em] font-black border border-gray-100 px-6 py-3 rounded-full">{isAdmin ? 'Fechar Painel' : 'Acesso Restrito'}</button>
         </div>
       </footer>
+      <SpeedInsights />
     </div>
   );
 };
