@@ -1,25 +1,40 @@
+
 <!DOCTYPE html>
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pizzeria Fenicia Menu - Menu Digital</title>
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#E74C3C">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- iOS Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Fenicia">
+    <link rel="apple-touch-icon" href="/images/icon-192.png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/caminho/para/o/seu/icone-192x192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-
     <style>
         body {
             font-family: 'Quicksand', sans-serif;
             scroll-behavior: smooth;
+            -webkit-tap-highlight-color: transparent;
         }
         h1, h2, h3, .font-serif {
             font-family: 'Italiana', serif;
+        }
+        /* Garantir que o conteúdo não fique escondido por baixo da "notch" em iOS */
+        @supports (padding: env(safe-area-inset-top)) {
+            .pwa-safe-top {
+                padding-top: env(safe-area-inset-top);
+            }
         }
     </style>
 <script type="importmap">
