@@ -1,3 +1,4 @@
+
 import React, { useRef } from 'react';
 import { MenuItem, Language } from '../types';
 import { Camera, Share2, Plus } from 'lucide-react';
@@ -71,11 +72,11 @@ export const MenuItemCard: React.FC<Props> = ({
   return (
     <div 
       id={item.id}
-      className={`flex items-center gap-4 sm:gap-8 py-8 border-b border-gray-50 last:border-none group relative transition-all ${isAdmin ? 'ring-4 ring-[#FF5733]/10 rounded-[2rem] px-4 -mx-4 my-2 bg-[#FF5733]/5' : ''}`}
+      className={`flex items-start gap-4 sm:gap-8 py-8 border-b border-gray-50 last:border-none group relative transition-all ${isAdmin ? 'ring-4 ring-[#FF5733]/10 rounded-[2rem] px-4 -mx-4 my-2 bg-[#FF5733]/5' : ''}`}
     >
       {/* Image Section with Enhanced Zoom */}
       <div 
-        className={`flex-shrink-0 w-20 h-20 sm:w-32 sm:h-32 rounded-[2rem] overflow-hidden shadow-xl relative cursor-pointer group/img border-4 border-white bg-gray-100 transform transition-transform duration-500 hover:rotate-2 hover:scale-110 active:scale-95`}
+        className={`flex-shrink-0 w-20 h-20 sm:w-32 sm:h-32 rounded-[2rem] overflow-hidden shadow-xl relative cursor-pointer group/img border-4 border-white bg-gray-100 transform transition-transform duration-500 hover:rotate-2 hover:scale-110 active:scale-95 mt-1`}
         onClick={handleImageClick}
       >
         <img 
@@ -98,32 +99,34 @@ export const MenuItemCard: React.FC<Props> = ({
         )}
       </div>
       
-      <div className="flex-grow flex flex-col justify-center min-w-0">
+      <div className="flex-grow flex flex-col min-w-0">
         <div className="flex justify-between items-start gap-3">
-          <div className="flex flex-col min-w-0 w-full">
-            <div className="flex items-center gap-2 mb-1">
+          <div className="flex flex-col min-w-0 flex-1">
+            <div className="flex items-start gap-2 mb-1">
               {isAdmin ? (
-                <div className="flex items-center gap-2 w-full">
-                  <span className="text-[10px] font-black text-white bg-[#E74C3C] px-1 py-1 rounded-lg shadow-sm italic flex items-center">
-                    #<input 
+                <div className="flex flex-col gap-2 w-full">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black text-white bg-[#E74C3C] px-2 py-1 rounded-lg shadow-sm italic flex items-center flex-shrink-0">
+                      #<input 
+                        type="text" 
+                        value={item.number || ''} 
+                        onChange={(e) => onNumberUpdate?.(item.id, e.target.value)}
+                        className="bg-transparent border-none focus:ring-0 w-6 text-center outline-none text-white font-black p-0"
+                        placeholder="?"
+                      />
+                    </span>
+                    <input 
                       type="text" 
-                      value={item.number || ''} 
-                      onChange={(e) => onNumberUpdate?.(item.id, e.target.value)}
-                      className="bg-transparent border-none focus:ring-0 w-6 text-center outline-none text-white font-black"
-                      placeholder="?"
+                      value={item.name} 
+                      onChange={(e) => onNameUpdate?.(item.id, e.target.value)}
+                      className="text-base sm:text-2xl font-black text-gray-900 bg-white/50 border-b-2 border-[#E74C3C]/10 focus:border-[#E74C3C] focus:outline-none w-full px-2 rounded-t-lg transition-colors"
                     />
-                  </span>
-                  <input 
-                    type="text" 
-                    value={item.name} 
-                    onChange={(e) => onNameUpdate?.(item.id, e.target.value)}
-                    className="text-base sm:text-2xl font-black text-gray-900 bg-white/50 border-b-2 border-[#E74C3C]/10 focus:border-[#E74C3C] focus:outline-none w-full px-2 rounded-t-lg transition-colors"
-                  />
+                  </div>
                 </div>
               ) : (
-                <h3 className="text-base sm:text-2xl font-black text-gray-900 truncate tracking-tighter flex items-center group-hover:text-[#E74C3C] transition-colors">
-                  {item.number && <span className="text-[10px] font-black text-white bg-[#E74C3C] px-2 py-1 rounded-lg mr-2 shadow-sm italic">#{item.number}</span>}
-                  {item.name}
+                <h3 className="text-base sm:text-2xl font-black text-gray-900 tracking-tighter flex items-start group-hover:text-[#E74C3C] transition-colors leading-tight">
+                  {item.number && <span className="text-[10px] font-black text-white bg-[#E74C3C] px-2 py-1 rounded-lg mr-2 shadow-sm italic mt-0.5 flex-shrink-0">#{item.number}</span>}
+                  <span className="break-words">{item.name}</span>
                 </h3>
               )}
             </div>
@@ -133,11 +136,11 @@ export const MenuItemCard: React.FC<Props> = ({
                 value={item.ingredients[lang]} 
                 onChange={(e) => onIngredientsUpdate?.(e.target.value)}
                 className="text-gray-600 text-xs sm:text-sm mt-2 italic font-medium leading-relaxed p-2 bg-white/50 border-2 border-transparent focus:border-[#E74C3C]/20 focus:outline-none rounded-xl w-full resize-none transition-all"
-                rows={2}
+                rows={3}
                 placeholder="Descreva os ingredientes..."
               />
             ) : (
-              <p className="text-gray-400 text-xs sm:text-sm mt-2 italic font-medium leading-relaxed pr-4">
+              <p className="text-gray-400 text-xs sm:text-sm mt-1.5 italic font-medium leading-relaxed pr-2 break-words">
                 {item.ingredients[lang]}
               </p>
             )}
