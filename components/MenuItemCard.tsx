@@ -74,15 +74,15 @@ export const MenuItemCard: React.FC<Props> = ({
       id={item.id}
       className={`flex items-start gap-4 sm:gap-8 py-8 border-b border-gray-50 last:border-none group relative transition-all ${isAdmin ? 'ring-4 ring-[#FF5733]/10 rounded-[2rem] px-4 -mx-4 my-2 bg-[#FF5733]/5' : ''}`}
     >
-      {/* Image Section with Enhanced Zoom */}
+      {/* Image Section with Dynamic Zoom */}
       <div 
-        className={`flex-shrink-0 w-20 h-20 sm:w-32 sm:h-32 rounded-[2rem] overflow-hidden shadow-xl relative cursor-pointer group/img border-4 border-white bg-gray-100 transform transition-transform duration-500 hover:rotate-2 hover:scale-110 active:scale-95 mt-1`}
+        className={`flex-shrink-0 w-20 h-20 sm:w-32 sm:h-32 rounded-[2rem] overflow-hidden shadow-xl relative cursor-pointer group/img border-4 border-white bg-gray-100 transform transition-transform duration-500 hover:rotate-2 hover:scale-105 active:scale-95 mt-1`}
         onClick={handleImageClick}
       >
         <img 
           src={item.image} 
           alt={item.name} 
-          className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-125"
+          className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover/img:scale-150 active:scale-150"
         />
         
         {isAdmin && (
@@ -135,12 +135,12 @@ export const MenuItemCard: React.FC<Props> = ({
               <textarea 
                 value={item.ingredients[lang]} 
                 onChange={(e) => onIngredientsUpdate?.(e.target.value)}
-                className="text-gray-600 text-xs sm:text-sm mt-2 italic font-medium leading-relaxed p-2 bg-white/50 border-2 border-transparent focus:border-[#E74C3C]/20 focus:outline-none rounded-xl w-full resize-none transition-all"
+                className="text-gray-800 text-xs sm:text-sm mt-2 italic font-medium leading-relaxed p-2 bg-white/50 border-2 border-transparent focus:border-[#E74C3C]/20 focus:outline-none rounded-xl w-full resize-none transition-all"
                 rows={3}
                 placeholder="Descreva os ingredientes..."
               />
             ) : (
-              <p className="text-gray-400 text-xs sm:text-sm mt-1.5 italic font-medium leading-relaxed pr-2 break-words">
+              <p className="text-gray-700 text-xs sm:text-sm mt-1.5 italic font-medium leading-relaxed pr-2 break-words">
                 {item.ingredients[lang]}
               </p>
             )}
