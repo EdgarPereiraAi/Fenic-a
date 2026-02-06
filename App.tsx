@@ -43,7 +43,7 @@ const App: React.FC = () => {
   const [masterMenu, setMasterMenu] = useState<Category[]>(MENU_DATA);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
-  // Carregar o menu da base de dados (KV)
+  // Carregar o menu sincronizado
   const loadMenu = async () => {
     setIsLoading(true);
     setApiError(null);
@@ -61,24 +61,24 @@ const App: React.FC = () => {
     }
   };
 
-  // Enviar o menu editado para o Upstash (Modo Administrador)
+  // BOTÃO ADMINISTRADOR: Coletar e enviar o menu para Upstash
   const syncMenuToUpstash = async () => {
     setIsSaving(true);
     setSaveSuccess(false);
     try {
-      // Coleta todos os nomes, preços e dados atuais da lista masterMenu
+      // Envia o estado ATUAL do masterMenu (nomes, preços, etc.)
       const response = await fetch('/api/menu', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(masterMenu)
       });
       
-      if (!response.ok) throw new Error('Erro na sincronização com o servidor.');
+      if (!response.ok) throw new Error('Erro ao salvar no servidor.');
       
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (error: any) {
-      alert(`Erro ao atualizar: ${error.message}`);
+      alert(`Erro na sincronização: ${error.message}`);
     } finally {
       setIsSaving(false);
     }
@@ -180,7 +180,7 @@ const App: React.FC = () => {
         <div className="bg-[#1D3C18] text-white py-3 px-4 sticky top-0 z-[110] shadow-2xl flex flex-wrap items-center justify-between gap-4 border-b border-white/10 backdrop-blur-md">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 font-black text-[10px] uppercase tracking-widest text-[#27AE60]">
-              <Unlock size={14} /> Modo Edição
+              <Unlock size={14} /> Painel de Gestão
             </div>
             <button 
               onClick={syncMenuToUpstash}
@@ -188,20 +188,13 @@ const App: React.FC = () => {
               className={`flex items-center gap-2 px-6 py-2 rounded-full font-black text-[11px] uppercase tracking-widest transition-all shadow-lg active:scale-95 ${
                 saveSuccess 
                   ? 'bg-green-500 text-white' 
-                  : 'bg-[#27AE60] text-white hover:bg-[#1E8449] hover:shadow-[#27AE60]/40'
+                  : 'bg-[#27AE60] text-white hover:bg-[#1E8449]'
               } ${isSaving ? 'opacity-70 cursor-wait' : ''}`}
             >
-              {isSaving ? (
-                <RefreshCcw size={14} className="animate-spin" />
-              ) : saveSuccess ? (
-                <CheckCircle size={14} />
-              ) : (
-                <CloudUpload size={14} />
-              )}
-              {saveSuccess ? 'Menu Atualizado!' : 'Atualizar Menu para Clientes'}
+              {isSaving ? <RefreshCcw size={14} className="animate-spin" /> : saveSuccess ? <CheckCircle size={14} /> : <CloudUpload size={14} />}
+              {saveSuccess ? 'Publicado!' : 'Atualizar Menu para Clientes'}
             </button>
           </div>
-          
           <button onClick={handleLogout} className="text-[10px] font-black uppercase tracking-widest bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full border border-white/20 transition-all text-white">
             Sair
           </button>
@@ -210,7 +203,7 @@ const App: React.FC = () => {
 
       {apiError && !isAdmin && (
         <div className="bg-amber-100 text-amber-900 py-2 px-4 text-center text-[10px] font-black uppercase tracking-widest border-b border-amber-200">
-          <div className="flex items-center justify-center gap-2"><AlertTriangle size={12} /> Usando modo offline (Local)</div>
+          <div className="flex items-center justify-center gap-2"><AlertTriangle size={12} /> Modo Offline - A carregar dados locais</div>
         </div>
       )}
 
@@ -258,7 +251,7 @@ const App: React.FC = () => {
 
       <main className="max-w-3xl mx-auto px-4 pb-20">
         {isLoading ? (
-          <div className="text-center py-20 flex flex-col items-center gap-4"><RefreshCcw size={48} className="animate-spin text-[#E74C3C]" /><p className="text-gray-400 font-black uppercase tracking-widest text-xs">A carregar menu...</p></div>
+          <div className="text-center py-20 flex flex-col items-center gap-4"><RefreshCcw size={48} className="animate-spin text-[#E74C3C]" /><p className="text-gray-400 font-black uppercase tracking-widest text-xs">A carregar menu sincronizado...</p></div>
         ) : filteredMenu.length === 0 ? (
           <div className="text-center py-32 opacity-30"><Search size={64} className="mx-auto mb-4" /><p className="text-gray-500 text-xl font-serif italic">Nenhum prato encontrado.</p></div>
         ) : (
