@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { MENU_DATA, CHEF_LOGO } from './data';
 import { MenuItemCard } from './components/MenuItemCard';
@@ -42,6 +43,7 @@ const App: React.FC = () => {
   const [masterMenu, setMasterMenu] = useState<Category[]>(MENU_DATA);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
+  // Carregar o menu da base de dados (KV)
   const loadMenu = async () => {
     setIsLoading(true);
     setApiError(null);
@@ -59,21 +61,24 @@ const App: React.FC = () => {
     }
   };
 
+  // Enviar o menu editado para o Upstash (Modo Administrador)
   const syncMenuToUpstash = async () => {
     setIsSaving(true);
     setSaveSuccess(false);
     try {
+      // Coleta todos os nomes, preços e dados atuais da lista masterMenu
       const response = await fetch('/api/menu', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(masterMenu)
       });
-      if (!response.ok) throw new Error('Erro ao sincronizar.');
+      
+      if (!response.ok) throw new Error('Erro na sincronização com o servidor.');
       
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (error: any) {
-      alert(`Erro: ${error.message}`);
+      alert(`Erro ao atualizar: ${error.message}`);
     } finally {
       setIsSaving(false);
     }

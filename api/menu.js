@@ -1,66 +1,68 @@
 
 export default async function handler(req, res) {
-  // Utilização das variáveis de ambiente padrão do Vercel KV
+  // Variáveis de ambiente padrão do Vercel KV / Upstash
   const { KV_REST_API_URL, KV_REST_API_TOKEN } = process.env;
+  
+  // Chave de armazenamento solicitada
   const KV_KEY = 'menu_pizzaria'; 
 
-  // Headers de CORS para permitir a comunicação com o frontend
+  // Headers de CORS para segurança e comunicação
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
-  // Verificação de integridade das credenciais
+  // Validação das credenciais no ambiente Vercel
   if (!KV_REST_API_URL || !KV_REST_API_TOKEN) {
-    console.error("CRITICAL ERROR: KV_REST_API_URL ou KV_REST_API_TOKEN não configuradas no Vercel.");
-    return res.status(500).json({ error: 'Erro de infraestrutura: Credenciais de sincronização ausentes.' });
+    console.error("ERRO: Credenciais KV_REST_API_URL ou KV_REST_API_TOKEN ausentes.");
+    return res.status(500).json({ error: 'Configuração de base de dados incompleta no Vercel.' });
   }
 
   try {
-    // MÉTODO GET: Recuperar o Menu
+    // MÉTODO GET: Para carregar o menu na App
     if (req.method === 'GET') {
-      const kvRes = await fetch(`${KV_REST_API_URL}/get/${KV_KEY}`, {
+      const kvResponse = await fetch(`${KV_REST_API_URL}/get/${KV_KEY}`, {
         headers: { Authorization: `Bearer ${KV_REST_API_TOKEN}` }
       });
       
-      if (!kvRes.ok) throw new Error('Falha na comunicação com o banco de dados KV.');
-
-      const kvData = await kvRes.json();
+      const data = await kvResponse.json();
       let menu = null;
-      if (kvData.result) {
-        menu = typeof kvData.result === 'string' ? JSON.parse(kvData.result) : kvData.result;
+      if (data.result) {
+        menu = typeof data.result === 'string' ? JSON.parse(data.result) : data.result;
       }
       return res.status(200).json({ menu });
     }
 
-    // MÉTODO POST: Sincronizar o Menu
+    // MÉTODO POST: Para atualizar o menu (Sincronização do Administrador)
     if (req.method === 'POST') {
       const menuData = req.body;
-      if (!menuData) return res.status(400).json({ error: 'Corpo da requisição inválido.' });
+      
+      if (!menuData) {
+        return res.status(400).json({ error: 'Dados do menu inválidos.' });
+      }
 
+      // Envio para o Upstash via REST API
       const response = await fetch(`${KV_REST_API_URL}/set/${KV_KEY}`, {
         method: 'POST',
         headers: { 
-          Authorization: `Bearer ${KV_REST_API_TOKEN}`,
+          'Authorization': `Bearer ${KV_REST_API_TOKEN}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(menuData)
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Erro de Sincronização KV: ${errorText}`);
+        throw new Error('Falha ao gravar no Upstash');
       }
 
-      return res.status(200).json({ success: true, message: 'Menu sincronizado com sucesso.' });
+      return res.status(200).json({ success: true, message: 'Menu publicado com sucesso!' });
     }
   } catch (error) {
-    console.error("API Menu Error:", error.message);
     return res.status(500).json({ error: error.message });
   }
 
-  return res.status(405).json({ error: 'Método não suportado.' });
+  return res.status(405).end();
 }
