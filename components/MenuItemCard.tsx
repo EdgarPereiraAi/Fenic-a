@@ -1,13 +1,14 @@
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { MenuItem, Language } from '../types';
-import { Camera, Share2, Plus } from 'lucide-react';
+import { Camera, Share2, Plus, Loader2 } from 'lucide-react';
+import { upload } from '@vercel/blob/client';
 
 interface Props {
   item: MenuItem;
   lang: Language;
   isAdmin?: boolean;
-  onImageUpdate?: (id: string, base64: string) => void;
+  onImageUpdate?: (id: string, url: string) => void;
   onPriceUpdate?: (id: string, price: string) => void;
   onNameUpdate?: (id: string, name: string) => void;
   onNumberUpdate?: (id: string, number: string) => void;
@@ -27,21 +28,32 @@ export const MenuItemCard: React.FC<Props> = ({
   onAddToCart 
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleImageClick = () => {
-    if (isAdmin) {
+    if (isAdmin && !isUploading) {
       fileInputRef.current?.click();
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && onImageUpdate) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        onImageUpdate(item.id, reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      try {
+        setIsUploading(true);
+        // Upload direto para o Vercel Blob via rota de autorização
+        const newBlob = await upload(file.name, file, {
+          access: 'public',
+          handleUploadUrl: '/api/upload',
+        });
+        
+        onImageUpdate(item.id, newBlob.url);
+      } catch (error) {
+        console.error('Erro no upload:', error);
+        alert('Falha ao carregar imagem. Verifique a ligação.');
+      } finally {
+        setIsUploading(false);
+      }
     }
   };
 
@@ -82,12 +94,16 @@ export const MenuItemCard: React.FC<Props> = ({
         <img 
           src={item.image} 
           alt={item.name} 
-          className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover/img:scale-150 active:scale-150"
+          className={`w-full h-full object-cover transition-transform duration-1000 ease-out group-hover/img:scale-150 active:scale-150 ${isUploading ? 'opacity-30' : 'opacity-100'}`}
         />
         
         {isAdmin && (
-          <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity">
-            <Camera className="text-white" size={24} />
+          <div className={`absolute inset-0 bg-black/50 flex items-center justify-center transition-opacity ${isUploading ? 'opacity-100' : 'opacity-0 group-hover/img:opacity-100'}`}>
+            {isUploading ? (
+              <Loader2 className="text-white animate-spin" size={24} />
+            ) : (
+              <Camera className="text-white" size={24} />
+            )}
             <input 
               type="file" 
               ref={fileInputRef} 
