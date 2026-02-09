@@ -21,7 +21,13 @@ const IMG_SALAD = 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?
 export const MENU_DATA: Category[] = [
   {
     id: 'entradas',
-    title: 'Entradas',
+    title: {
+      pt: 'Entradas',
+      en: 'Starters',
+      es: 'Entradas',
+      fr: 'Entrées',
+      de: 'Vorspeisen'
+    },
     items: [
       { id: 'e00', number: '00', name: 'Pão', price: '1.50€', ingredients: { pt: 'Pão fresco', en: 'Bread', fr: 'Pain', de: 'Brot', es: 'Pan fresco' }, image: IMG_BREAD },
       { id: 'e01', number: '01', name: 'Pão com Alho', price: '3.50€', ingredients: { pt: 'Pão com alho', en: 'Bread with garlic', fr: 'Pain à l\'ail', de: 'Brot mit knoblauch', es: 'Pan con ajo' }, image: IMG_ITEM_01 },
@@ -32,7 +38,13 @@ export const MENU_DATA: Category[] = [
   },
   {
     id: 'massas',
-    title: 'Massas e Empadas',
+    title: {
+      pt: 'Massas e Empadas',
+      en: 'Pasta and Pies',
+      es: 'Pastas y Empanadas',
+      fr: 'Pâtes et Tourtes',
+      de: 'Pasta und Pasteten'
+    },
     items: [
       { id: 'm44', number: '44', name: 'Lasanha da Casa', price: '11.00€', ingredients: { pt: 'Lasanha da casa', en: 'House lasagne', fr: 'Lasagnes maison', de: 'Haus lasagne', es: 'Lasaña de casa' }, image: IMG_LASAGNA },
       { id: 'm45', number: '45', name: 'Esparguete à Bolonhesa', price: '10.00€', ingredients: { pt: 'Esparguete à bolonhesa', en: 'Bolognaise spaghetti', fr: 'Spagetthi à la bolognaise', de: 'Bolognaise spaghetti', es: 'Espaguetis a la boloñesa' }, image: IMG_SPAGHETTI },
@@ -43,7 +55,13 @@ export const MENU_DATA: Category[] = [
   },
   {
     id: 'pizzas-classicas',
-    title: 'Pizzas Clássicas',
+    title: {
+      pt: 'Pizzas Clássicas',
+      en: 'Classic Pizzas',
+      es: 'Pizzas Clásicas',
+      fr: 'Pizzas Classiques',
+      de: 'Klassische Pizzas'
+    },
     items: [
       { id: 'p01', number: '1', name: 'Capriciosa', price: '10.00€', ingredients: { pt: 'Tomate, queijo, fiambre e cogumelos', en: 'Tomato, cheese, ham and mushrooms', fr: 'Tomate, fromage, jambon et champignons', de: 'Tomaten, käse, schinken and pilze', es: 'Tomate, queso, jamón y champiñones' }, image: IMG_PIZZA_CLASSIC },
       { id: 'p02', number: '2', name: 'Milano', price: '9.50€', ingredients: { pt: 'Tomate, queijo, fiambre', en: 'Tomato, cheese and ham', fr: 'Tomate, fromage et jambon', de: 'Tomaten, käse und schinken', es: 'Tomate, queso y jamón' }, image: IMG_PIZZA_CLASSIC },
@@ -63,7 +81,13 @@ export const MENU_DATA: Category[] = [
   },
   {
     id: 'pizzas-especiais',
-    title: 'Pizzas Especiais',
+    title: {
+      pt: 'Pizzas Especiais',
+      en: 'Special Pizzas',
+      es: 'Pizzas Especiales',
+      fr: 'Pizzas Spéciales',
+      de: 'Spezielle Pizzas'
+    },
     items: [
       { id: 'ps12', number: '12', name: 'Fenicia Especial', price: '12.00€', ingredients: { pt: 'Tomate, queijo, fiambre,cebola, lombo de porco, camarão e pimentos', en: 'Tomato, cheese, ham, onions, pork fillet, prawns and peppers', fr: 'Tomate, fromage, jambon, oignons, filet de porc, crevettes et piment vert', de: 'Tomaten, käse, schinken, zwiebeln, schweinefilet, garnelen und paprika', es: 'Tomate, queso, jamón, cebolla, solomillo, gambas e pimientos' }, image: IMG_PIZZA_SPECIAL },
       { id: 'ps22', number: '22', name: 'Tavira Especial', price: '12.00€', ingredients: { pt: 'Tomate, queijo, fiambre, carne kebab e molho', en: 'Tomato, cheese, ham, kebab meat and sauce', fr: 'Tomate, fromage, jambon, viande de kebab et sauce', de: 'Tomaten, käse, schinken, kebab fleisch und soße', es: 'Tomate, queso, jamón, carne de kebab y salsa' }, image: IMG_PIZZA_SPECIAL },
@@ -83,7 +107,13 @@ export const MENU_DATA: Category[] = [
   },
   {
     id: 'saladas',
-    title: 'Saladas',
+    title: {
+      pt: 'Saladas',
+      en: 'Salads',
+      es: 'Ensaladas',
+      fr: 'Salades',
+      de: 'Salate'
+    },
     items: [
       { id: 's30', number: '30', name: 'Salada Americana', price: '9.50€', ingredients: { pt: 'Alface, tomate, pepino, fiambre, ananás e molho', en: 'Lettuce, tomato, cucumber, ham, pine-apple and sauce', fr: 'Laitue, tomate, concombre, jambon, ananas et sauce', de: 'Salat, tomate, gurke, schinken, kieferapfel und soße', es: 'Lechuga, tomate, pepino, jamón, piña y salsa' }, image: IMG_SALAD },
       { id: 's31', number: '31', name: 'Salada Portuguesa', price: '9.50€', ingredients: { pt: 'Alface, tomate, pepino, cebola, queijo mozzarella, azeitonas e molho', en: 'Lettuce, tomato, cucumber, onions, cheese mozzarella, olives and sauce', fr: 'Laitue, tomate, concombre, oignon, fromage, olives et sauce', de: 'Salat, tomate, gurke, zwiebeln, käsemozzarella, oliven und soße', es: 'Lechuga, tomate, pepino, cebolla, mozzarella, aceitunas y salsa' }, image: IMG_SALAD },
@@ -96,11 +126,18 @@ export const MENU_DATA: Category[] = [
   },
   {
     id: 'especialidades',
-    title: 'Especialidades',
+    title: {
+      pt: 'Especialidades',
+      en: 'Specialities',
+      es: 'Especialidades',
+      fr: 'Spécialités',
+      de: 'Spezialitäten'
+    },
     items: [
       { id: 'sp25', number: '25', name: 'Kebab no Pão', price: '9.00€', ingredients: { pt: 'Alface, tomate, pepino, cebola, carne e molho de kebab', en: 'Lettuce, tomato, cucumber, onions, meat and kebab sauce', fr: 'Laitue, tomate fraîche concombre, oignon, viande de kebab et sauce de kebab', de: 'Salat, tomaten, gurken, zwiebeln, fleisch und kebab-sauce', es: 'Lechuga, tomate, pepino, cebolla, carne e salsa kebab' }, image: IMG_KEBAB_BREAD },
       { id: 'sp60', number: '60', name: 'Rolo de Kebab', price: '9.50€', ingredients: { pt: 'Alface, tomate, pepino, cebola, carne e molho de kebab', en: 'Lettuce, tomato, cucumber, onions, meat and kebab sauce', fr: 'Laitue, tomate fraîche, concombre, oignon, viande de kebab et sauce de kebab', de: 'Salat, tomaten, gurken, zwiebeln, fleisch und kebab-sauce', es: 'Lechuga, tomate, pepino, cebolla, carne e salsa kebab' }, image: IMG_KEBAB_ROLL },
       { id: 'sp61', number: '61', name: 'Rolo de Frango', price: '9.50€', ingredients: { pt: 'Alface, tomate, pepino, cebola, frango e molho de kebab', en: 'Lettuce, tomato, cucumber, onions, chicken and kebab sauce', fr: 'Laitue, tomate fraîche, concombre, oignon, poulet et sauce de kebab', de: 'Salat, tomaten, gurken, zwiebeln, hühnchen and kebab-sauce', es: 'Lechuga, tomate, pepino, cebolla, pollo e salsa kebab' }, image: IMG_KEBAB_ROLL }
     ]
   }
+];
 ];
