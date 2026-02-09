@@ -1,9 +1,11 @@
 
 export default async function handler(req, res) {
-  const { UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN } = process.env;
-  const KV_KEY = 'UPSTASH_API_FENICIA'; 
+  // O Vercel injeta automaticamente estas variáveis se o KV estiver conectado
+  const URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+  const TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+  const KV_KEY = 'PIZZARIA_FENICIA_MENU_V2';
 
-  // Configuração de CORS para permitir requisições do próprio domínio
+  // Configuração de CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -12,50 +14,78 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  if (!UPSTASH_REDIS_REST_URL || !UPSTASH_REDIS_REST_TOKEN) {
-    console.error('ERRO: Credenciais do Upstash não configuradas no Vercel.');
-    return res.status(500).json({ error: 'Erro de configuração no servidor. Verifique as variáveis de ambiente.' });
+  if (!URL || !TOKEN) {
+    console.error('CRITICAL ERROR: KV environment variables are missing.');
+    return res.status(500).json({ 
+      error: 'Servidor não configurado.', 
+      details: 'As variáveis KV_REST_API_URL e KV_REST_API_TOKEN não foram encontradas no ambiente.' 
+    });
   }
 
   try {
+    // --- LÓGICA DE GET ---
     if (req.method === 'GET') {
-      const kvResponse = await fetch(`${UPSTASH_REDIS_REST_URL}/get/${KV_KEY}`, {
-        headers: { Authorization: `Bearer ${UPSTASH_REDIS_REST_TOKEN}` },
+      const kvResponse = await fetch(`${URL}/get/${KV_KEY}`, {
+        headers: { Authorization: `Bearer ${TOKEN}` },
         cache: 'no-store'
       });
       
       if (!kvResponse.ok) {
-        throw new Error(`Upstash respondeu com status: ${kvResponse.status}`);
+        const errText = await kvResponse.text();
+        throw new Error(`Upstash/KV Error: ${kvResponse.status} - ${errText}`);
       }
 
       const data = await kvResponse.json();
+      
+      // No Upstash/KV, o resultado pode vir como string JSON ou objeto dependendo de como foi salvo
       let menu = null;
       if (data.result) {
-        menu = typeof data.result === 'string' ? JSON.parse(data.result) : data.result;
+        try {
+          menu = typeof data.result === 'string' ? JSON.parse(data.result) : data.result;
+        } catch (e) {
+          console.error('Error parsing menu data from KV:', e);
+          menu = null;
+        }
       }
+      
       return res.status(200).json({ menu });
     }
 
+    // --- LÓGICA DE POST ---
     if (req.method === 'POST') {
       const menuData = req.body;
-      const response = await fetch(`${UPSTASH_REDIS_REST_URL}/set/${KV_KEY}`, {
+      
+      if (!menuData) {
+        return res.status(400).json({ error: 'Corpo da requisição vazio.' });
+      }
+
+      // Vercel KV espera o valor como string ou JSON dependendo do comando
+      // Usamos o endpoint de POST para o comando SET
+      const response = await fetch(`${URL}/set/${KV_KEY}`, {
         method: 'POST',
         headers: { 
-          'Authorization': `Bearer ${UPSTASH_REDIS_REST_TOKEN}`,
+          'Authorization': `Bearer ${TOKEN}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(menuData)
       });
 
       if (!response.ok) {
-        throw new Error(`Falha ao salvar no Upstash: ${response.statusText}`);
+        const errText = await response.text();
+        throw new Error(`Failed to save to KV: ${response.status} - ${errText}`);
       }
-      return res.status(200).json({ success: true });
-    }
-  } catch (error) {
-    console.error('Erro na execução da função api/menu:', error.message);
-    return res.status(500).json({ error: 'Erro interno do servidor', details: error.message });
-  }
 
-  return res.status(405).json({ error: 'Método não permitido.' });
+      return res.status(200).json({ success: true, timestamp: Date.now() });
+    }
+
+    // Método não suportado
+    return res.status(405).json({ error: `Método ${req.method} não permitido.` });
+
+  } catch (error) {
+    console.error(`API ROUTE ERROR [${req.method}]:`, error.message);
+    return res.status(500).json({ 
+      error: 'Erro interno no servidor de API.', 
+      details: error.message 
+    });
+  }
 }
