@@ -1,6 +1,8 @@
+
 import React, { useState } from 'react';
 import { X, Printer, Layout, Columns as ColumnsIcon, Maximize, Image as ImageIcon, Droplets, Type, Check, RectangleHorizontal } from 'lucide-react';
 import { Category, Language } from '../types';
+import { translations } from '../translations';
 
 interface Props {
   isOpen: boolean;
@@ -14,6 +16,7 @@ type FontSize = 'XS' | 'SM' | 'NOR' | 'LG';
 type Orientation = 'portrait' | 'landscape';
 
 export const PrintMenuModal: React.FC<Props> = ({ isOpen, onClose, menuData, lang }) => {
+  const t = translations[lang];
   const [paperSize, setPaperSize] = useState<PaperSize>('A4');
   const [orientation, setOrientation] = useState<Orientation>('portrait');
   const [showImages, setShowImages] = useState(true);
@@ -67,21 +70,19 @@ export const PrintMenuModal: React.FC<Props> = ({ isOpen, onClose, menuData, lan
 
   return (
     <div className="fixed inset-0 z-[160] flex items-center justify-center bg-black/90 backdrop-blur-md print:bg-white print:static overflow-hidden">
-      {/* Painel de Configuração Compacto */}
       <div className="absolute left-4 top-4 bottom-4 z-[170] flex flex-col w-72 print:hidden animate-in slide-in-from-left duration-500">
         <div className="bg-white rounded-[2rem] h-full flex flex-col shadow-2xl overflow-hidden border border-white/20">
           <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-            <h2 className="text-gray-900 font-black uppercase tracking-tight text-base font-serif">Ajustes</h2>
+            <h2 className="text-gray-900 font-black uppercase tracking-tight text-base font-serif">{t.adjustments}</h2>
             <button onClick={onClose} className="p-1.5 hover:bg-gray-200 rounded-full transition-all text-gray-400">
               <X size={16} />
             </button>
           </div>
 
           <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-gray-200">
-            {/* Formato */}
             <div className="space-y-1.5">
               <h3 className="text-gray-400 font-black uppercase tracking-widest text-[8px] flex items-center gap-1.5">
-                <Maximize size={10} /> Papel
+                <Maximize size={10} /> {t.paper}
               </h3>
               <div className="grid grid-cols-3 gap-1">
                 {(['A5', 'A4', 'A3', 'A2', 'A1'] as PaperSize[]).map((size) => (
@@ -100,31 +101,29 @@ export const PrintMenuModal: React.FC<Props> = ({ isOpen, onClose, menuData, lan
               </div>
             </div>
 
-            {/* Orientação */}
             <div className="space-y-1.5">
               <h3 className="text-gray-400 font-black uppercase tracking-widest text-[8px] flex items-center gap-1.5">
-                <Layout size={10} /> Orientação
+                <Layout size={10} /> {t.orientation}
               </h3>
               <div className="flex gap-1">
                   <button 
                       onClick={() => setOrientation('portrait')}
                       className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg border-2 transition-all font-black text-[9px] ${orientation === 'portrait' ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-400 border-gray-100'}`}
                   >
-                      <RectangleHorizontal size={10} className="rotate-90" /> Retrato
+                      <RectangleHorizontal size={10} className="rotate-90" /> {t.portrait}
                   </button>
                   <button 
                       onClick={() => setOrientation('landscape')}
                       className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg border-2 transition-all font-black text-[9px] ${orientation === 'landscape' ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-400 border-gray-100'}`}
                   >
-                      <RectangleHorizontal size={10} /> Paisagem
+                      <RectangleHorizontal size={10} /> {t.landscape}
                   </button>
               </div>
             </div>
 
-            {/* Tamanho Texto */}
             <div className="space-y-1.5">
               <h3 className="text-gray-400 font-black uppercase tracking-widest text-[8px] flex items-center gap-1.5">
-                <Type size={10} /> Letra
+                <Type size={10} /> {t.fontSize}
               </h3>
               <div className="flex gap-1 p-1 bg-gray-50 rounded-lg">
                   {(['XS', 'SM', 'NOR', 'LG'] as FontSize[]).map((f) => (
@@ -139,10 +138,9 @@ export const PrintMenuModal: React.FC<Props> = ({ isOpen, onClose, menuData, lan
               </div>
             </div>
 
-            {/* Colunas */}
             <div className="space-y-1.5">
               <h3 className="text-gray-400 font-black uppercase tracking-widest text-[8px] flex items-center gap-1.5">
-                <ColumnsIcon size={10} /> Colunas
+                <ColumnsIcon size={10} /> {t.columns}
               </h3>
               <div className="flex gap-1 p-1 bg-gray-50 rounded-lg">
                   {['auto', 1, 2, 3, 4].map((c) => (
@@ -157,7 +155,6 @@ export const PrintMenuModal: React.FC<Props> = ({ isOpen, onClose, menuData, lan
               </div>
             </div>
 
-            {/* Opções Extra */}
             <div className="pt-1 space-y-1.5">
               <button 
                 onClick={() => setShowImages(!showImages)}
@@ -165,7 +162,7 @@ export const PrintMenuModal: React.FC<Props> = ({ isOpen, onClose, menuData, lan
                   showImages ? 'bg-[#27AE60]/5 text-[#27AE60] border-[#27AE60]/20' : 'bg-white text-gray-400 border-gray-100'
                 }`}
               >
-                <div className="flex items-center gap-2"><ImageIcon size={12} /> Fotos</div>
+                <div className="flex items-center gap-2"><ImageIcon size={12} /> {t.photos}</div>
                 {showImages && <Check size={12} />}
               </button>
 
@@ -175,7 +172,7 @@ export const PrintMenuModal: React.FC<Props> = ({ isOpen, onClose, menuData, lan
                   grayscale ? 'bg-gray-900/5 text-gray-900 border-gray-900/20' : 'bg-white text-gray-400 border-gray-100'
                 }`}
               >
-                <div className="flex items-center gap-2"><Droplets size={12} /> P&B</div>
+                <div className="flex items-center gap-2"><Droplets size={12} /> {t.bw}</div>
                 {grayscale && <Check size={12} />}
               </button>
             </div>
@@ -187,13 +184,12 @@ export const PrintMenuModal: React.FC<Props> = ({ isOpen, onClose, menuData, lan
               className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#E74C3C] text-white font-black uppercase tracking-widest text-[10px] hover:bg-[#C0392B] transition-all shadow-xl shadow-[#E74C3C]/20 active:scale-95"
             >
               <Printer size={14} />
-              Imprimir
+              {t.print}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Área de Pré-visualização */}
       <div className="w-full h-full overflow-auto flex justify-center py-10 pl-72 print:p-0 print:m-0 print:overflow-visible scrollbar-hide">
         <div 
           id="printable-menu"
@@ -205,11 +201,10 @@ export const PrintMenuModal: React.FC<Props> = ({ isOpen, onClose, menuData, lan
           }}
         >
           <div className="flex flex-col h-full bg-white">
-            {/* Header Section */}
             <div className="text-center mb-8 w-full">
               <p className="text-[#D4AF37] font-serif text-lg tracking-[0.3em] mb-0.5 uppercase">Cucina Italiana</p>
               <h1 className="text-5xl text-[#E74C3C] font-serif leading-[0.8] tracking-tighter">Pizzeria</h1>
-              <h1 className="text-6xl text-[#27AE60] font-serif leading-[0.8] tracking-tighter -mt-1">Fenicia Menu</h1>
+              <h1 className="text-6xl text-[#27AE60] font-serif leading-[0.8] tracking-tighter -mt-1">Fenicia</h1>
               <div className="flex items-center justify-center gap-4 my-3">
                 <div className="h-[1px] w-10 bg-gray-100"></div>
                 <p className="uppercase tracking-[0.4em] text-[7px] font-black text-gray-300">Tavira • Algarve</p>
@@ -217,7 +212,6 @@ export const PrintMenuModal: React.FC<Props> = ({ isOpen, onClose, menuData, lan
               </div>
             </div>
 
-            {/* Categorias */}
             <div 
               className="w-full"
               style={{ 
@@ -232,7 +226,7 @@ export const PrintMenuModal: React.FC<Props> = ({ isOpen, onClose, menuData, lan
                   <div className="flex items-center gap-2 mb-3 pb-1 border-b-2 border-[#E74C3C]/10">
                     <div className="w-1 h-5 bg-[#27AE60]"></div>
                     <h2 className="text-base font-serif text-[#1D3C18] uppercase tracking-wide italic font-black">
-                      {category.title}
+                      {category.title[lang] || category.title.pt}
                     </h2>
                   </div>
                   <div className="space-y-3">
@@ -252,7 +246,7 @@ export const PrintMenuModal: React.FC<Props> = ({ isOpen, onClose, menuData, lan
                             <span className="font-black text-[#E74C3C] tabular-nums whitespace-nowrap">{item.price}</span>
                           </div>
                           <p className="text-[0.85em] text-gray-500 italic leading-tight font-medium">
-                            {item.ingredients[lang]}
+                            {item.ingredients[lang] || item.ingredients['pt']}
                           </p>
                         </div>
                       </div>
@@ -261,77 +255,9 @@ export const PrintMenuModal: React.FC<Props> = ({ isOpen, onClose, menuData, lan
                 </div>
               ))}
             </div>
-
-            {/* Footer */}
-            <div className="mt-auto pt-8 border-t border-dashed border-gray-100 flex items-center justify-between w-full opacity-50">
-                <div className="text-left">
-                  <p className="text-[6px] font-black uppercase text-[#1D3C18]">Tavira, Portugal</p>
-                  <p className="text-[6px] font-bold text-gray-500">T: 281 325 175</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-[6px] font-black uppercase text-[#1D3C18]">Buon Appetito</p>
-                  <p className="text-[6px] font-bold text-gray-500 italic">Pizzeria Fenicia Menu</p>
-                </div>
-            </div>
           </div>
         </div>
       </div>
-
-      <style>{`
-        @media print {
-          #root, .fixed.z-[140], .fixed.z-[150] {
-            display: none !important;
-          }
-          
-          body {
-            margin: 0 !important;
-            padding: 0 !important;
-            background: white !important;
-            visibility: hidden;
-          }
-
-          .fixed {
-            position: absolute !important;
-            left: 0 !important;
-            top: 0 !important;
-            display: block !important;
-            visibility: visible !important;
-            background: white !important;
-          }
-
-          .print\\:hidden {
-            display: none !important;
-          }
-
-          #printable-menu {
-            visibility: visible !important;
-            margin: 0 !important;
-            padding: 10mm !important;
-            box-shadow: none !important;
-            border: none !important;
-            width: ${dims.w} !important;
-            height: ${dims.h} !important;
-            page-break-after: always;
-          }
-
-          @page {
-            size: ${dims.w} ${dims.h};
-            margin: 0;
-          }
-
-          * {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-          }
-        }
-        
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        .scrollbar-thin::-webkit-scrollbar { width: 3px; }
-        .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
-        .scrollbar-thin::-webkit-scrollbar-thumb { background: #f3f4f6; border-radius: 10px; }
-      `}</style>
     </div>
   );
 };
