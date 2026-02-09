@@ -49,12 +49,29 @@ const App: React.FC = () => {
   const [masterMenu, setMasterMenu] = useState<Category[]>(MENU_DATA);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
-   const loadMenu = async () => {
+  const loadMenu = async () => {
     setIsLoading(true);
     setApiError(null);
     try {
-      setMasterMenu(MENU_DATA); 
+      const response = await fetch(`/api/menu?t=${Date.now()}`, { 
+        cache: 'no-store',
+        headers: {
+          'Pragma': 'no-cache',
+          'Cache-Control': 'no-cache'
+        }
+      });
+      
+      if (!response.ok) throw new Error('Falha ao comunicar com o servidor');
+      
+      const data = await response.json();
+      if (data.menu && Array.isArray(data.menu)) {
+        setMasterMenu(data.menu);
+      } else {
+        setMasterMenu(MENU_DATA);
+      }
     } catch (error: any) {
+      console.warn('Erro ao carregar menu online, usando dados locais:', error.message);
+      setMasterMenu(MENU_DATA);
       setApiError(error.message);
     } finally {
       setIsLoading(false);
@@ -201,7 +218,7 @@ const App: React.FC = () => {
 
       {apiError && !isAdmin && (
         <div className="bg-amber-100 text-amber-900 py-2 px-4 text-center text-[10px] font-black uppercase tracking-widest border-b border-amber-200">
-          <div className="flex items-center justify-center gap-2"><AlertTriangle size={12} /> Offline Mode - Loading local data</div>
+          <div className="flex items-center justify-center gap-2"><AlertTriangle size={12} /> Ligação Instável - Dados em Cache</div>
         </div>
       )}
 
@@ -260,7 +277,7 @@ const App: React.FC = () => {
                 {category.items.map((item) => (
                   <MenuItemCard 
                     key={item.id} item={item} lang={lang} isAdmin={isAdmin}
-                    onImageUpdate={(id, base64) => updateMenuItem(id, { image: base64 })}
+                    onImageUpdate={(id, url) => updateMenuItem(id, { image: url })}
                     onPriceUpdate={(id, price) => updateMenuItem(id, { price })}
                     onNameUpdate={(id, name) => updateMenuItem(id, { name })}
                     onNumberUpdate={(id, number) => updateMenuItem(id, { number })}

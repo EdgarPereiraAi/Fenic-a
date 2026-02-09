@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pizzeria Fenicia Menu - Menu Digital</title>
     
+    <!-- Favicon Fix -->
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    
     <!-- PWA Meta Tags -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#E74C3C">
@@ -15,7 +18,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Fenicia">
-    <link rel="apple-touch-icon" href="/images/icon-192.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,7 +32,6 @@
         h1, h2, h3, .font-serif {
             font-family: 'Italiana', serif;
         }
-        /* Garantir que o conteúdo não fique escondido por baixo da "notch" em iOS */
         @supports (padding: env(safe-area-inset-top)) {
             .pwa-safe-top {
                 padding-top: env(safe-area-inset-top);
@@ -47,8 +48,10 @@
     "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
     "vite": "https://esm.sh/vite@^7.3.1",
     "qrcode.react": "https://esm.sh/qrcode.react@^4.2.0",
-    "@vercel/blob/": "https://esm.sh/@vercel/blob@^2.2.0/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.40.0"
+    "@vercel/blob": "https://esm.sh/@vercel/blob@^0.27.1",
+    "@vercel/blob/client": "https://esm.sh/@vercel/blob@^0.27.1/client",
+    "@google/genai": "https://esm.sh/@google/genai@^1.40.0",
+    "@vercel/blob/": "https://esm.sh/@vercel/blob@^2.2.0/"
   }
 }
 </script>
