@@ -16,7 +16,13 @@ export interface MenuItem {
 
 export interface Category {
   id: string;
-  title: string;
+  title: {
+    pt: string;
+    en: string;
+    fr: string;
+    de: string;
+    es: string;
+  };
   items: MenuItem[];
 }
 

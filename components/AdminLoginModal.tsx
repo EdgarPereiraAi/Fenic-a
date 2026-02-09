@@ -1,16 +1,20 @@
 
 import React, { useState } from 'react';
 import { X, Lock, ShieldCheck, AlertCircle } from 'lucide-react';
+import { Language } from '../types';
+import { translations } from '../translations';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   onLogin: () => void;
+  lang: Language;
 }
 
-export const AdminLoginModal: React.FC<Props> = ({ isOpen, onClose, onLogin }) => {
+export const AdminLoginModal: React.FC<Props> = ({ isOpen, onClose, onLogin, lang }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
+  const t = translations[lang];
 
   if (!isOpen) return null;
 
@@ -42,15 +46,15 @@ export const AdminLoginModal: React.FC<Props> = ({ isOpen, onClose, onLogin }) =
           <div className="w-16 h-16 border-2 border-white/50 rounded-full flex items-center justify-center mb-4">
             <Lock size={32} strokeWidth={1.5} />
           </div>
-          <h2 className="text-3xl font-serif uppercase tracking-widest text-center">Área de Gestão</h2>
-          <p className="text-white/90 text-[10px] font-bold mt-2 uppercase tracking-widest">Apenas para pessoal autorizado</p>
+          <h2 className="text-3xl font-serif uppercase tracking-widest text-center">{t.managementArea}</h2>
+          <p className="text-white/90 text-[10px] font-bold mt-2 uppercase tracking-widest">{t.authorizedOnly}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="p-8 bg-white">
           <div className="space-y-6">
             <div className="space-y-2">
               <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">
-                Palavra-passe
+                {t.password}
               </label>
               <div className="relative">
                 <input
@@ -67,7 +71,7 @@ export const AdminLoginModal: React.FC<Props> = ({ isOpen, onClose, onLogin }) =
               {error && (
                 <div className="flex items-center justify-center gap-2 text-red-500 text-[10px] font-black uppercase mt-2 animate-bounce">
                   <AlertCircle size={14} />
-                  Senha incorreta
+                  {t.wrongPassword}
                 </div>
               )}
             </div>
@@ -77,14 +81,8 @@ export const AdminLoginModal: React.FC<Props> = ({ isOpen, onClose, onLogin }) =
               className="w-full py-4 bg-[#1D3C18] text-white rounded-xl font-black uppercase tracking-[0.2em] text-xs shadow-lg hover:bg-black transition-all active:scale-95 flex items-center justify-center gap-3"
             >
               <ShieldCheck size={18} />
-              Aceder Painel
+              {t.accessPanel}
             </button>
-          </div>
-          
-          <div className="mt-8 pt-4 border-t border-gray-50">
-            <p className="text-center text-[10px] text-gray-400 font-medium italic">
-              Dica: Contacte o suporte se esqueceu a senha.
-            </p>
           </div>
         </form>
       </div>

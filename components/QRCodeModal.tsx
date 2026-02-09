@@ -1,14 +1,19 @@
+
 import React from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { X, Share2, Copy, Check } from 'lucide-react';
+import { Language } from '../types';
+import { translations } from '../translations';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  lang: Language;
 }
 
-export const QRCodeModal: React.FC<Props> = ({ isOpen, onClose }) => {
+export const QRCodeModal: React.FC<Props> = ({ isOpen, onClose, lang }) => {
   const [copied, setCopied] = React.useState(false);
+  const t = translations[lang];
   
   if (!isOpen) return null;
 
@@ -24,7 +29,7 @@ export const QRCodeModal: React.FC<Props> = ({ isOpen, onClose }) => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'Menu Pizzeria Fenicia Menu',
+          title: `Pizzeria Fenicia Menu`,
           url: currentUrl,
         });
       } catch (err) {
@@ -45,8 +50,8 @@ export const QRCodeModal: React.FC<Props> = ({ isOpen, onClose }) => {
 
         <div className="p-10 flex flex-col items-center text-center">
           <div className="mb-6">
-            <h2 className="text-3xl font-serif font-black text-gray-900">Partilhar Menu</h2>
-            <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mt-1">Aponte a câmara para aceder</p>
+            <h2 className="text-3xl font-serif font-black text-gray-900">{t.shareMenu}</h2>
+            <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mt-1">{t.pointCamera}</p>
           </div>
 
           <div className="p-8 bg-white border-2 border-gray-50 rounded-[2.5rem] shadow-sm mb-8 transform transition-transform hover:scale-105 duration-500">
@@ -68,7 +73,7 @@ export const QRCodeModal: React.FC<Props> = ({ isOpen, onClose }) => {
               }`}
             >
               {copied ? <Check size={16} /> : <Copy size={16} />}
-              {copied ? 'Link Copiado!' : 'Copiar Link'}
+              {copied ? t.linkCopied : t.copyLink}
             </button>
             
             {navigator.share && (
@@ -77,7 +82,7 @@ export const QRCodeModal: React.FC<Props> = ({ isOpen, onClose }) => {
                 className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl bg-[#E74C3C] text-white font-black uppercase text-[10px] tracking-widest hover:bg-[#C0392B] transition-all shadow-lg shadow-[#E74C3C]/20"
               >
                 <Share2 size={16} />
-                Enviar para Amigos
+                {t.sendFriends}
               </button>
             )}
           </div>

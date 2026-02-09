@@ -2,6 +2,7 @@
 import React from 'react';
 import { X, Trash2, Plus, Minus, ShoppingBag, ClipboardList, Phone } from 'lucide-react';
 import { CartItem, Language } from '../types';
+import { translations } from '../translations';
 
 interface Props {
   isOpen: boolean;
@@ -17,6 +18,7 @@ interface Props {
 export const OrderNotepad: React.FC<Props> = ({ 
   isOpen, onClose, items, onUpdateQuantity, onRemove, onClear, lang, phoneNumber 
 }) => {
+  const t = translations[lang];
   if (!isOpen) return null;
 
   const total = items.reduce((sum, item) => {
@@ -24,7 +26,6 @@ export const OrderNotepad: React.FC<Props> = ({
     return sum + (priceNum * item.quantity);
   }, 0);
 
-  // Garantir formato internacional no link
   const telLink = phoneNumber.startsWith('+') ? phoneNumber : `+351${phoneNumber}`;
 
   return (
@@ -36,8 +37,8 @@ export const OrderNotepad: React.FC<Props> = ({
           <div className="flex items-center gap-2">
             <ClipboardList className="text-[#D4AF37]" size={20} />
             <div>
-              <h2 className="text-lg font-serif font-bold italic">Minha Encomenda</h2>
-              <p className="text-[8px] font-black uppercase tracking-[0.2em] opacity-60">Resumo do Pedido</p>
+              <h2 className="text-lg font-serif font-bold italic">{t.myOrder}</h2>
+              <p className="text-[8px] font-black uppercase tracking-[0.2em] opacity-60">{t.orderSummary}</p>
             </div>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-all">
@@ -56,7 +57,7 @@ export const OrderNotepad: React.FC<Props> = ({
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full py-20 text-center opacity-30">
               <ShoppingBag size={40} className="mb-2" strokeWidth={1} />
-              <p className="font-serif italic text-lg text-gray-600">O seu bloco está vazio...</p>
+              <p className="font-serif italic text-lg text-gray-600">{t.emptyCart}</p>
             </div>
           ) : (
             <div className="px-6 py-2">
@@ -103,7 +104,7 @@ export const OrderNotepad: React.FC<Props> = ({
                 onClick={onClear}
                 className="mt-6 w-full py-2 text-[9px] font-black uppercase text-gray-400 hover:text-red-500 transition-all flex items-center justify-center gap-1"
               >
-                Limpar Tudo
+                {t.clearAll}
               </button>
             </div>
           )}
@@ -111,7 +112,7 @@ export const OrderNotepad: React.FC<Props> = ({
 
         <div className="bg-white border-t border-gray-100 p-6 shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
           <div className="flex justify-between items-center mb-5">
-            <span className="font-serif italic text-xl text-gray-900">Total</span>
+            <span className="font-serif italic text-xl text-gray-900">{t.total}</span>
             <span className="font-black text-2xl text-[#E74C3C]">{total.toFixed(2)}€</span>
           </div>
           
@@ -121,12 +122,12 @@ export const OrderNotepad: React.FC<Props> = ({
               className="w-full py-4 rounded-2xl flex items-center justify-center gap-3 font-black uppercase text-xs tracking-widest transition-all shadow-xl active:scale-95 bg-[#E74C3C] text-white hover:bg-[#C0392B] shadow-[#E74C3C]/30"
             >
               <Phone size={20} />
-              Ligar para Pedir
+              {t.callToOrder}
             </a>
           </div>
           
           <p className="text-center text-[8px] text-gray-400 mt-4 uppercase font-bold tracking-tight">
-            * Informe o número dos pratos ao telefone
+            {t.orderNote}
           </p>
         </div>
       </div>
