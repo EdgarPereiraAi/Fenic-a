@@ -2,17 +2,12 @@
 import { handleUpload } from '@vercel/blob/client';
 
 export default async function handler(request, response) {
-  const body = request.body;
-
   try {
     const jsonResponse = await handleUpload({
-      body,
+      body: request.body,
       request,
       onBeforeGenerateToken: async (pathname) => {
-        /*
-         * No futuro, pode adicionar lógica de autenticação de admin aqui
-         * para garantir que apenas o utilizador logado faça uploads.
-         */
+        // Aqui você pode adicionar lógica de verificação de cookies/auth futuramente
         return {
           allowedContentTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
           tokenPayload: JSON.stringify({
@@ -21,12 +16,13 @@ export default async function handler(request, response) {
         };
       },
       onUploadCompleted: async ({ blob, tokenPayload }) => {
-        console.log('Upload concluído com sucesso:', blob.url);
+        console.log('Upload de Blob finalizado:', blob.url);
       },
     });
 
     return response.status(200).json(jsonResponse);
   } catch (error) {
+    console.error('Erro na Rota de Upload:', error);
     return response.status(400).json({ error: error.message });
   }
 }

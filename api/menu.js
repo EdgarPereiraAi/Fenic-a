@@ -3,6 +3,7 @@ export default async function handler(req, res) {
   const { UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN } = process.env;
   const KV_KEY = 'UPSTASH_API_FENICIA'; 
 
+  // Configuração de CORS para permitir requisições do próprio domínio
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -12,7 +13,8 @@ export default async function handler(req, res) {
   }
 
   if (!UPSTASH_REDIS_REST_URL || !UPSTASH_REDIS_REST_TOKEN) {
-    return res.status(500).json({ error: 'Erro de configuração: Credenciais do banco de dados ausentes.' });
+    console.error('ERRO: Credenciais do Upstash não configuradas no Vercel.');
+    return res.status(500).json({ error: 'Erro de configuração no servidor. Verifique as variáveis de ambiente.' });
   }
 
   try {
@@ -22,10 +24,13 @@ export default async function handler(req, res) {
         cache: 'no-store'
       });
       
+      if (!kvResponse.ok) {
+        throw new Error(`Upstash respondeu com status: ${kvResponse.status}`);
+      }
+
       const data = await kvResponse.json();
       let menu = null;
       if (data.result) {
-        // Upstash retorna o valor no campo 'result'
         menu = typeof data.result === 'string' ? JSON.parse(data.result) : data.result;
       }
       return res.status(200).json({ menu });
@@ -42,13 +47,15 @@ export default async function handler(req, res) {
         body: JSON.stringify(menuData)
       });
 
-      if (!response.ok) throw new Error('Falha ao salvar no banco de dados.');
+      if (!response.ok) {
+        throw new Error(`Falha ao salvar no Upstash: ${response.statusText}`);
+      }
       return res.status(200).json({ success: true });
     }
   } catch (error) {
-    console.error('Erro na API:', error.message);
-    return res.status(500).json({ error: error.message });
+    console.error('Erro na execução da função api/menu:', error.message);
+    return res.status(500).json({ error: 'Erro interno do servidor', details: error.message });
   }
 
-  return res.status(405).json({ error: 'Método não suportado.' });
+  return res.status(405).json({ error: 'Método não permitido.' });
 }
