@@ -7,26 +7,32 @@ import { PrintMenuModal } from './components/PrintMenuModal';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { OrderNotepad } from './components/OrderNotepad';
 import { QRCodeModal } from './components/QRCodeModal';
+import { translations } from './translations';
 import { Language, MenuItem, CartItem, Category } from './types';
 import { Search, Phone, ChevronDown, Unlock, ClipboardList, ArrowRight, Printer, QrCode, RefreshCcw, MapPin, Clock, CloudUpload, AlertTriangle, CheckCircle } from 'lucide-react';
 
 const PHONE_NUMBER = "281325175"; 
 const FORMATTED_PHONE = "281 325 175";
 
-const OrderButtons: React.FC = () => (
-  <div className="flex flex-row gap-3 w-full max-w-lg mx-auto my-6 px-4">
-    <a
-      href={`tel:+351${PHONE_NUMBER}`}
-      className="flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-[#E74C3C] text-white hover:bg-[#C0392B] transition-all duration-300 font-black shadow-lg shadow-[#E74C3C]/40 hover:scale-105 active:scale-95 text-sm uppercase tracking-widest"
-    >
-      <Phone size={20} />
-      {FORMATTED_PHONE}
-    </a>
-  </div>
-);
+const OrderButtons: React.FC<{ lang: Language }> = ({ lang }) => {
+  const t = translations[lang];
+  return (
+    <div className="flex flex-row gap-3 w-full max-w-lg mx-auto my-6 px-4">
+      <a
+        href={`tel:+351${PHONE_NUMBER}`}
+        className="flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-[#E74C3C] text-white hover:bg-[#C0392B] transition-all duration-300 font-black shadow-lg shadow-[#E74C3C]/40 hover:scale-105 active:scale-95 text-sm uppercase tracking-widest"
+      >
+        <Phone size={20} />
+        {t.callToOrder} - {FORMATTED_PHONE}
+      </a>
+    </div>
+  );
+};
 
 const App: React.FC = () => {
   const [lang, setLang] = useState<Language>('pt');
+  const t = translations[lang];
+
   const [activeCategory, setActiveCategory] = useState(MENU_DATA[0].id);
   const [searchTerm, setSearchTerm] = useState('');
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
@@ -43,17 +49,11 @@ const App: React.FC = () => {
   const [masterMenu, setMasterMenu] = useState<Category[]>(MENU_DATA);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
-  // Carregar o menu sincronizado
-  const loadMenu = async () => {
+   const loadMenu = async () => {
     setIsLoading(true);
     setApiError(null);
     try {
-      const response = await fetch('/api/menu');
-      if (!response.ok) throw new Error('Falha ao carregar menu.');
-      const data = await response.json();
-      if (data && data.menu && Array.isArray(data.menu)) {
-        setMasterMenu(data.menu);
-      }
+      setMasterMenu(MENU_DATA); 
     } catch (error: any) {
       setApiError(error.message);
     } finally {
@@ -61,12 +61,10 @@ const App: React.FC = () => {
     }
   };
 
-  // BOTÃO ADMINISTRADOR: Coletar e enviar o menu para Upstash
   const syncMenuToUpstash = async () => {
     setIsSaving(true);
     setSaveSuccess(false);
     try {
-      // Envia o estado ATUAL do masterMenu (nomes, preços, etc.)
       const response = await fetch('/api/menu', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -180,7 +178,7 @@ const App: React.FC = () => {
         <div className="bg-[#1D3C18] text-white py-3 px-4 sticky top-0 z-[110] shadow-2xl flex flex-wrap items-center justify-between gap-4 border-b border-white/10 backdrop-blur-md">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 font-black text-[10px] uppercase tracking-widest text-[#27AE60]">
-              <Unlock size={14} /> Painel de Gestão
+              <Unlock size={14} /> {t.adminPanel}
             </div>
             <button 
               onClick={syncMenuToUpstash}
@@ -192,18 +190,18 @@ const App: React.FC = () => {
               } ${isSaving ? 'opacity-70 cursor-wait' : ''}`}
             >
               {isSaving ? <RefreshCcw size={14} className="animate-spin" /> : saveSuccess ? <CheckCircle size={14} /> : <CloudUpload size={14} />}
-              {saveSuccess ? 'Publicado!' : 'Atualizar Menu para Clientes'}
+              {saveSuccess ? 'OK!' : t.updateMenu}
             </button>
           </div>
           <button onClick={handleLogout} className="text-[10px] font-black uppercase tracking-widest bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full border border-white/20 transition-all text-white">
-            Sair
+            {t.logout}
           </button>
         </div>
       )}
 
       {apiError && !isAdmin && (
         <div className="bg-amber-100 text-amber-900 py-2 px-4 text-center text-[10px] font-black uppercase tracking-widest border-b border-amber-200">
-          <div className="flex items-center justify-center gap-2"><AlertTriangle size={12} /> Modo Offline - A carregar dados locais</div>
+          <div className="flex items-center justify-center gap-2"><AlertTriangle size={12} /> Offline Mode - Loading local data</div>
         </div>
       )}
 
@@ -224,26 +222,26 @@ const App: React.FC = () => {
           <div className="bg-white/80 backdrop-blur-md p-10 md:p-16 rounded-[4rem] border border-white shadow-[0_40px_100px_rgba(0,0,0,0.15)] relative overflow-hidden">
             <h1 className="text-7xl md:text-[10rem] leading-[0.8] font-serif tracking-tighter relative z-10">
               <span className="text-[#E74C3C] block mb-2">Pizzeria</span>
-              <span className="text-[#27AE60] block -mt-4 md:-mt-8">Fenicia Menu</span>
+              <span className="text-[#27AE60] block -mt-4 md:-mt-8">Fenicia</span>
             </h1>
           </div>
-          <p className="text-gray-900 text-lg md:text-2xl font-serif italic tracking-wide max-w-lg font-black mx-auto mt-8">"A verdadeira essência italiana no coração do Algarve."</p>
+          <p className="text-gray-900 text-lg md:text-2xl font-serif italic tracking-wide max-w-lg font-black mx-auto mt-8">{t.slogan}</p>
         </div>
       </header>
 
-      <div className="max-w-4xl mx-auto -mt-12 relative z-30"><OrderButtons /></div>
+      <div className="max-w-4xl mx-auto -mt-12 relative z-30"><OrderButtons lang={lang} /></div>
 
       <div className="sticky top-20 z-40 max-w-xl mx-auto px-4 mt-12 mb-8">
         <div className="relative group shadow-2xl rounded-[2rem] overflow-hidden bg-white/80 backdrop-blur-xl border border-white/20">
           <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none"><Search className="h-5 w-5 text-gray-400" /></div>
-          <input type="text" placeholder="O que deseja provar hoje?..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="block w-full pl-14 pr-6 py-5 bg-transparent border-none focus:ring-0 focus:outline-none text-gray-900 text-base font-bold transition-all" />
+          <input type="text" placeholder={t.searchPlaceholder} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="block w-full pl-14 pr-6 py-5 bg-transparent border-none focus:ring-0 focus:outline-none text-gray-900 text-base font-bold transition-all" />
         </div>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 mb-20 flex flex-wrap justify-center gap-3">
         {masterMenu.map((category) => (
           <button key={category.id} onClick={() => scrollToCategory(category.id)} className={`group flex items-center justify-between px-6 py-5 rounded-3xl font-black transition-all duration-300 shadow-lg ${activeCategory === category.id ? 'scale-105 shadow-2xl ring-4 ring-white z-10' : 'opacity-90 hover:opacity-100 hover:-translate-y-1'}`} style={{ backgroundColor: CATEGORY_COLORS[category.id] || '#ccc', color: 'white' }}>
-            <div className="flex flex-col items-start gap-1"><span className="uppercase tracking-[0.2em] text-[11px] leading-none">Explorar</span><span className="text-sm uppercase tracking-tight">{category.title}</span></div>
+            <div className="flex flex-col items-start gap-1"><span className="uppercase tracking-[0.2em] text-[11px] leading-none">{t.explore}</span><span className="text-sm uppercase tracking-tight">{category.title[lang] || category.title.pt}</span></div>
             <div className={`p-2 rounded-2xl bg-white/20 transition-transform ${activeCategory === category.id ? 'rotate-90' : 'group-hover:translate-x-1'}`}><ArrowRight size={18} /></div>
           </button>
         ))}
@@ -251,13 +249,13 @@ const App: React.FC = () => {
 
       <main className="max-w-3xl mx-auto px-4 pb-20">
         {isLoading ? (
-          <div className="text-center py-20 flex flex-col items-center gap-4"><RefreshCcw size={48} className="animate-spin text-[#E74C3C]" /><p className="text-gray-400 font-black uppercase tracking-widest text-xs">A carregar menu sincronizado...</p></div>
+          <div className="text-center py-20 flex flex-col items-center gap-4"><RefreshCcw size={48} className="animate-spin text-[#E74C3C]" /><p className="text-gray-400 font-black uppercase tracking-widest text-xs">{t.loadingMenu}</p></div>
         ) : filteredMenu.length === 0 ? (
-          <div className="text-center py-32 opacity-30"><Search size={64} className="mx-auto mb-4" /><p className="text-gray-500 text-xl font-serif italic">Nenhum prato encontrado.</p></div>
+          <div className="text-center py-32 opacity-30"><Search size={64} className="mx-auto mb-4" /><p className="text-gray-500 text-xl font-serif italic">{t.noItemsFound}</p></div>
         ) : (
           filteredMenu.map((category) => (
             <section key={category.id} id={category.id} className="mb-20 scroll-mt-32">
-              <div className="mb-8 flex items-center gap-4 px-2"><div className="w-3 h-10 rounded-full" style={{ backgroundColor: CATEGORY_COLORS[category.id] }}></div><h2 className="text-4xl text-gray-900 font-black tracking-tighter">{category.title}</h2></div>
+              <div className="mb-8 flex items-center gap-4 px-2"><div className="w-3 h-10 rounded-full" style={{ backgroundColor: CATEGORY_COLORS[category.id] }}></div><h2 className="text-4xl text-gray-900 font-black tracking-tighter">{category.title[lang] || category.title.pt}</h2></div>
               <div className="bg-white rounded-[3rem] p-6 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 space-y-2">
                 {category.items.map((item) => (
                   <MenuItemCard 
@@ -289,19 +287,19 @@ const App: React.FC = () => {
       </div>
 
       <PrintMenuModal isOpen={isPrintModalOpen} onClose={() => setIsPrintModalOpen(false)} menuData={masterMenu} lang={lang} />
-      <QRCodeModal isOpen={isQRCodeModalOpen} onClose={() => setIsQRCodeModalOpen(false)} />
-      <AdminLoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} onLogin={handleLogin} />
+      <QRCodeModal isOpen={isQRCodeModalOpen} onClose={() => setIsQRCodeModalOpen(false)} lang={lang} />
+      <AdminLoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} onLogin={handleLogin} lang={lang} />
       <OrderNotepad isOpen={isNotepadOpen} onClose={() => setIsNotepadOpen(false)} items={cartItems} onUpdateQuantity={updateCartQuantity} onRemove={removeFromCart} onClear={clearCart} lang={lang} phoneNumber={PHONE_NUMBER} />
 
       <footer className="bg-white pt-24 pb-40 border-t border-gray-100 text-center relative overflow-hidden">
         <div className="max-w-4xl mx-auto px-4 relative z-10">
           <img src={CHEF_LOGO} alt="Chef" className="w-20 h-20 object-contain opacity-40 grayscale mx-auto mb-8" />
-          <h3 className="text-5xl md:text-7xl text-[#1D3C18] mb-12 font-black italic tracking-tighter">Pizzeria Fenicia Menu</h3>
+          <h3 className="text-5xl md:text-7xl text-[#1D3C18] mb-12 font-black italic tracking-tighter">Pizzeria Fenicia</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-2xl mx-auto mb-20">
-            <div className="flex flex-col items-center gap-4"><div className="p-4 bg-[#E74C3C]/10 rounded-full text-[#E74C3C]"><MapPin size={28} /></div><p className="text-gray-900 font-black text-lg">Largo da Caracolinha, n.8, Tavira</p></div>
+            <div className="flex flex-col items-center gap-4"><div className="p-4 bg-[#E74C3C]/10 rounded-full text-[#E74C3C]"><MapPin size={28} /></div><p className="text-gray-900 font-black text-lg">{t.location}</p></div>
             <div className="flex flex-col items-center gap-4"><div className="p-4 bg-[#27AE60]/10 rounded-full text-[#27AE60]"><Clock size={28} /></div><p className="text-gray-900 font-black text-lg">12h-15h | 19h-22h</p></div>
           </div>
-          <button onClick={() => isAdmin ? handleLogout() : setIsLoginModalOpen(true)} className="text-[9px] text-gray-300 hover:text-[#FF5733] transition-all uppercase tracking-[0.5em] font-black border border-gray-100 px-6 py-3 rounded-full">{isAdmin ? 'Fechar Painel' : 'Acesso Restrito'}</button>
+          <button onClick={() => isAdmin ? handleLogout() : setIsLoginModalOpen(true)} className="text-[9px] text-gray-300 hover:text-[#FF5733] transition-all uppercase tracking-[0.5em] font-black border border-gray-100 px-6 py-3 rounded-full">{isAdmin ? t.closePanel : t.restrictedAccess}</button>
         </div>
       </footer>
     </div>
