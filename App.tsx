@@ -239,7 +239,7 @@ const App: React.FC = () => {
           <div className="bg-white/80 backdrop-blur-md p-10 md:p-16 rounded-[4rem] border border-white shadow-[0_40px_100px_rgba(0,0,0,0.15)] relative overflow-hidden">
             <h1 className="text-7xl md:text-[10rem] leading-[0.8] font-serif tracking-tighter relative z-10">
               <span className="text-[#E74C3C] block mb-2">Pizzeria</span>
-              <span className="text-[#27AE60] block -mt-4 md:-mt-8">Fenicia</span>
+              <span className="text-[#27AE60] block -mt-4 md:-mt-8">Fenicia Menu</span>
             </h1>
           </div>
           <p className="text-gray-900 text-lg md:text-2xl font-serif italic tracking-wide max-w-lg font-black mx-auto mt-8">{t.slogan}</p>
@@ -311,7 +311,7 @@ const App: React.FC = () => {
       <footer className="bg-white pt-24 pb-40 border-t border-gray-100 text-center relative overflow-hidden">
         <div className="max-w-4xl mx-auto px-4 relative z-10">
           <img src={CHEF_LOGO} alt="Chef" className="w-20 h-20 object-contain opacity-40 grayscale mx-auto mb-8" />
-          <h3 className="text-5xl md:text-7xl text-[#1D3C18] mb-12 font-black italic tracking-tighter">Pizzeria Fenicia</h3>
+          <h3 className="text-5xl md:text-7xl text-[#1D3C18] mb-12 font-black italic tracking-tighter">Pizzeria Fenicia Menu</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-2xl mx-auto mb-20">
             <div className="flex flex-col items-center gap-4"><div className="p-4 bg-[#E74C3C]/10 rounded-full text-[#E74C3C]"><MapPin size={28} /></div><p className="text-gray-900 font-black text-lg">{t.location}</p></div>
             <div className="flex flex-col items-center gap-4"><div className="p-4 bg-[#27AE60]/10 rounded-full text-[#27AE60]"><Clock size={28} /></div><p className="text-gray-900 font-black text-lg">12h-15h | 19h-22h</p></div>
