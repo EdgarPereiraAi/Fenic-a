@@ -255,6 +255,12 @@ const App: React.FC = () => {
         </div>
       </div>
 
+      <div className="max-w-4xl mx-auto px-4 mt-8 mb-4 text-center">
+        <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.2em] opacity-60">
+          ({t.vatNotice})
+        </p>
+      </div>
+
       <div className="max-w-4xl mx-auto px-4 mb-20 flex flex-wrap justify-center gap-3">
         {masterMenu.map((category) => (
           <button key={category.id} onClick={() => scrollToCategory(category.id)} className={`group flex items-center justify-between px-6 py-5 rounded-3xl font-black transition-all duration-300 shadow-lg ${activeCategory === category.id ? 'scale-105 shadow-2xl ring-4 ring-white z-10' : 'opacity-90 hover:opacity-100 hover:-translate-y-1'}`} style={{ backgroundColor: CATEGORY_COLORS[category.id] || '#ccc', color: 'white' }}>
