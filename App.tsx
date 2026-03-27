@@ -319,8 +319,23 @@ const App: React.FC = () => {
           <img src={CHEF_LOGO} alt="Chef" className="w-20 h-20 object-contain opacity-40 grayscale mx-auto mb-8" />
           <h3 className="text-5xl md:text-7xl text-[#1D3C18] mb-12 font-black italic tracking-tighter">Pizzeria Fenicia Menu</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-2xl mx-auto mb-20">
-            <div className="flex flex-col items-center gap-4"><div className="p-4 bg-[#E74C3C]/10 rounded-full text-[#E74C3C]"><MapPin size={28} /></div><p className="text-gray-900 font-black text-lg">{t.location}</p></div>
-            <div className="flex flex-col items-center gap-4"><div className="p-4 bg-[#27AE60]/10 rounded-full text-[#27AE60]"><Clock size={28} /></div><p className="text-gray-900 font-black text-lg">12h-15h | 19h-22h</p></div>
+            <a 
+              href="https://www.google.com/maps/search/?api=1&query=Largo+da+Caracolinha+n.8+Tavira" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex flex-col items-center gap-4 hover:scale-105 transition-transform cursor-pointer group"
+            >
+              <div className="p-4 bg-[#E74C3C]/10 rounded-full text-[#E74C3C] group-hover:bg-[#E74C3C]/20 transition-colors">
+                <MapPin size={28} />
+              </div>
+              <p className="text-gray-900 font-black text-lg">{t.location}</p>
+            </a>
+            <div className="flex flex-col items-center gap-4">
+              <div className="p-4 bg-[#27AE60]/10 rounded-full text-[#27AE60]">
+                <Clock size={28} />
+              </div>
+              <p className="text-gray-900 font-black text-lg">12h-15h | 19h-22h</p>
+            </div>
           </div>
           <button onClick={() => isAdmin ? handleLogout() : setIsLoginModalOpen(true)} className="text-[9px] text-gray-300 hover:text-[#FF5733] transition-all uppercase tracking-[0.5em] font-black border border-gray-100 px-6 py-3 rounded-full">{isAdmin ? t.closePanel : t.restrictedAccess}</button>
         </div>
