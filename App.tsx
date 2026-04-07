@@ -65,7 +65,19 @@ const App: React.FC = () => {
       
       const data = await response.json();
       if (data.menu && Array.isArray(data.menu)) {
-        setMasterMenu(data.menu);
+        // Merge API data with local MENU_DATA to ensure new categories are picked up
+        const apiMenu: Category[] = data.menu;
+        const apiCatIds = new Set(apiMenu.map(c => c.id));
+        const mergedMenu = [...apiMenu];
+        
+        // Add categories from local MENU_DATA that are missing in the API
+        MENU_DATA.forEach(localCat => {
+          if (!apiCatIds.has(localCat.id)) {
+            mergedMenu.push(localCat);
+          }
+        });
+        
+        setMasterMenu(mergedMenu);
       } else {
         setMasterMenu(MENU_DATA);
       }

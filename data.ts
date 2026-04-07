@@ -151,32 +151,32 @@ export const MENU_DATA: Category[] = [
     },
     items: [
       // Refrigerantes
-      { id: 'b01', number: '', name: 'Coca-Cola', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink' }, image: IMG_DRINKS },
-      { id: 'b02', number: '', name: 'Coca-Cola Zero', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink' }, image: IMG_DRINKS },
-      { id: 'b03', number: '', name: 'Fanta Laranja', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink' }, image: IMG_DRINKS },
-      { id: 'b04', number: '', name: 'Sprite', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink' }, image: IMG_DRINKS },
-      { id: 'b05', number: '', name: 'Guaraná', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink' }, image: IMG_DRINKS },
-      { id: 'b06', number: '', name: 'Sumol Laranja', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink' }, image: IMG_DRINKS },
-      { id: 'b07', number: '', name: 'Sumol Ananás', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink' }, image: IMG_DRINKS },
-      { id: 'b08', number: '', name: 'Fuze tea Limão', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink' }, image: IMG_DRINKS },
-      { id: 'b09', number: '', name: 'Fuze tea Pêssego', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink' }, image: IMG_DRINKS },
-      { id: 'b10', number: '', name: 'Fuze tea Manga Ananás', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink' }, image: IMG_DRINKS },
+      { id: 'b01', number: '', name: 'Coca-Cola', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink', fr: 'Boisson', de: 'Erfrischungsgetränk', es: 'Refresco' }, image: IMG_DRINKS },
+      { id: 'b02', number: '', name: 'Coca-Cola Zero', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink', fr: 'Boisson', de: 'Erfrischungsgetränk', es: 'Refresco' }, image: IMG_DRINKS },
+      { id: 'b03', number: '', name: 'Fanta Laranja', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink', fr: 'Boisson', de: 'Erfrischungsgetränk', es: 'Refresco' }, image: IMG_DRINKS },
+      { id: 'b04', number: '', name: 'Sprite', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink', fr: 'Boisson', de: 'Erfrischungsgetränk', es: 'Refresco' }, image: IMG_DRINKS },
+      { id: 'b05', number: '', name: 'Guaraná', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink', fr: 'Boisson', de: 'Erfrischungsgetränk', es: 'Refresco' }, image: IMG_DRINKS },
+      { id: 'b06', number: '', name: 'Sumol Laranja', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink', fr: 'Boisson', de: 'Erfrischungsgetränk', es: 'Refresco' }, image: IMG_DRINKS },
+      { id: 'b07', number: '', name: 'Sumol Ananás', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink', fr: 'Boisson', de: 'Erfrischungsgetränk', es: 'Refresco' }, image: IMG_DRINKS },
+      { id: 'b08', number: '', name: 'Fuze tea Limão', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink', fr: 'Boisson', de: 'Erfrischungsgetränk', es: 'Refresco' }, image: IMG_DRINKS },
+      { id: 'b09', number: '', name: 'Fuze tea Pêssego', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink', fr: 'Boisson', de: 'Erfrischungsgetränk', es: 'Refresco' }, image: IMG_DRINKS },
+      { id: 'b10', number: '', name: 'Fuze tea Manga Ananás', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink', fr: 'Boisson', de: 'Erfrischungsgetränk', es: 'Refresco' }, image: IMG_DRINKS },
       // Águas
-      { id: 'b11', number: '', name: 'Água Mineral (0,50L)', price: '1.50€', ingredients: { pt: 'Água', en: 'Water' }, image: IMG_DRINKS },
-      { id: 'b12', number: '', name: 'Água das Pedras', price: '2.00€', ingredients: { pt: 'Água', en: 'Water' }, image: IMG_DRINKS },
-      { id: 'b13', number: '', name: 'Água Castelo', price: '2.00€', ingredients: { pt: 'Água', en: 'Water' }, image: IMG_DRINKS },
+      { id: 'b11', number: '', name: 'Água Mineral (0,50L)', price: '1.50€', ingredients: { pt: 'Água', en: 'Water', fr: 'Eau', de: 'Wasser', es: 'Agua' }, image: IMG_DRINKS },
+      { id: 'b12', number: '', name: 'Água das Pedras', price: '2.00€', ingredients: { pt: 'Água', en: 'Water', fr: 'Eau', de: 'Wasser', es: 'Agua' }, image: IMG_DRINKS },
+      { id: 'b13', number: '', name: 'Água Castelo', price: '2.00€', ingredients: { pt: 'Água', en: 'Water', fr: 'Eau', de: 'Wasser', es: 'Agua' }, image: IMG_DRINKS },
       // Cervejas
-      { id: 'b14', number: '', name: 'Imperial', price: '1.60€', ingredients: { pt: 'Só para consumo no estabelecimento', en: 'In-house consumption only' }, image: IMG_DRINKS },
-      { id: 'b15', number: '', name: 'Caneca', price: '3.50€', ingredients: { pt: 'Só para consumo no estabelecimento', en: 'In-house consumption only' }, image: IMG_DRINKS },
-      { id: 'b16', number: '', name: 'Sagres (33cl)', price: '1.70€', ingredients: { pt: 'Cerveja', en: 'Beer' }, image: IMG_DRINKS },
-      { id: 'b17', number: '', name: 'Sagres S/Álcool (33cl)', price: '1.70€', ingredients: { pt: 'Cerveja', en: 'Beer' }, image: IMG_DRINKS },
-      { id: 'b18', number: '', name: 'Sagres Preta', price: '1.70€', ingredients: { pt: 'Cerveja', en: 'Beer' }, image: IMG_DRINKS },
-      { id: 'b19', number: '', name: 'Somersby', price: '2.70€', ingredients: { pt: 'Cerveja', en: 'Beer' }, image: IMG_DRINKS },
+      { id: 'b14', number: '', name: 'Imperial', price: '1.60€', ingredients: { pt: 'Só para consumo no estabelecimento', en: 'In-house consumption only', fr: 'Consommation sur place uniquement', de: 'Nur für den Verzehr im Haus', es: 'Solo para consumo en el establecimiento' }, image: IMG_DRINKS },
+      { id: 'b15', number: '', name: 'Caneca', price: '3.50€', ingredients: { pt: 'Só para consumo no estabelecimento', en: 'In-house consumption only', fr: 'Consommation sur place uniquement', de: 'Nur für den Verzehr im Haus', es: 'Solo para consumo en el establecimiento' }, image: IMG_DRINKS },
+      { id: 'b16', number: '', name: 'Sagres (33cl)', price: '1.70€', ingredients: { pt: 'Cerveja', en: 'Beer', fr: 'Bière', de: 'Bier', es: 'Cerveza' }, image: IMG_DRINKS },
+      { id: 'b17', number: '', name: 'Sagres S/Álcool (33cl)', price: '1.70€', ingredients: { pt: 'Cerveja', en: 'Beer', fr: 'Bière', de: 'Bier', es: 'Cerveza' }, image: IMG_DRINKS },
+      { id: 'b18', number: '', name: 'Sagres Preta', price: '1.70€', ingredients: { pt: 'Cerveja', en: 'Beer', fr: 'Bière', de: 'Bier', es: 'Cerveza' }, image: IMG_DRINKS },
+      { id: 'b19', number: '', name: 'Somersby', price: '2.70€', ingredients: { pt: 'Cerveja', en: 'Beer', fr: 'Bière', de: 'Bier', es: 'Cerveza' }, image: IMG_DRINKS },
       // Sangrias
-      { id: 'b20', number: '', name: 'Copo de Sangria', price: '4.50€', ingredients: { pt: 'Só para consumo no estabelecimento', en: 'In-house consumption only' }, image: IMG_DRINKS },
-      { id: 'b21', number: '', name: 'Jarro de Sangria (1L)', price: '13.50€', ingredients: { pt: 'Só para consumo no estabelecimento', en: 'In-house consumption only' }, image: IMG_DRINKS },
-      { id: 'b22', number: '', name: 'Jarro Frutos Vermelhos (1L)', price: '14.50€', ingredients: { pt: 'Só para consumo no estabelecimento', en: 'In-house consumption only' }, image: IMG_DRINKS },
-      { id: 'b23', number: '', name: 'Copo de Vinho', price: '3.00€', ingredients: { pt: 'Só para consumo no estabelecimento', en: 'In-house consumption only' }, image: IMG_DRINKS }
+      { id: 'b20', number: '', name: 'Copo de Sangria', price: '4.50€', ingredients: { pt: 'Só para consumo no estabelecimento', en: 'In-house consumption only', fr: 'Consommation sur place uniquement', de: 'Nur für den Verzehr im Haus', es: 'Solo para consumo en el establecimiento' }, image: IMG_DRINKS },
+      { id: 'b21', number: '', name: 'Jarro de Sangria (1L)', price: '13.50€', ingredients: { pt: 'Só para consumo no estabelecimento', en: 'In-house consumption only', fr: 'Consommation sur place uniquement', de: 'Nur für den Verzehr im Haus', es: 'Solo para consumo en el estabelecimento' }, image: IMG_DRINKS },
+      { id: 'b22', number: '', name: 'Jarro Frutos Vermelhos (1L)', price: '14.50€', ingredients: { pt: 'Só para consumo no estabelecimento', en: 'In-house consumption only', fr: 'Consommation sur place uniquement', de: 'Nur für den Verzehr im Haus', es: 'Solo para consumo en el estabelecimento' }, image: IMG_DRINKS },
+      { id: 'b23', number: '', name: 'Copo de Vinho', price: '3.00€', ingredients: { pt: 'Só para consumo no estabelecimento', en: 'In-house consumption only', fr: 'Consommation sur place uniquement', de: 'Nur für den Verzehr im Haus', es: 'Solo para consumo en el estabelecimento' }, image: IMG_DRINKS }
     ]
   }
 ];
