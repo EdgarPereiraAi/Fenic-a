@@ -17,6 +17,7 @@ const IMG_MEAT_PIE = 'https://images.unsplash.com/photo-1619051810561-26c71c1f72
 const IMG_KEBAB_BREAD = 'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?auto=format&fit=crop&w=800&q=80';
 const IMG_KEBAB_ROLL = 'https://images.unsplash.com/photo-1561651823-34feb02250e4?auto=format&fit=crop&w=800&q=80';
 const IMG_SALAD = 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80';
+const IMG_DRINKS = 'https://images.unsplash.com/photo-1544145945-f904253d0c7b?auto=format&fit=crop&w=800&q=80';
 
 export const MENU_DATA: Category[] = [
   {
@@ -137,6 +138,45 @@ export const MENU_DATA: Category[] = [
       { id: 'sp25', number: '25', name: 'Kebab no Pão', price: '9.00€', ingredients: { pt: 'Alface, tomate, pepino, cebola, carne e molho de kebab', en: 'Lettuce, tomato, cucumber, onions, meat and kebab sauce', fr: 'Laitue, tomate fraîche concombre, oignon, viande de kebab et sauce de kebab', de: 'Salat, tomaten, gurken, zwiebeln, fleisch und kebab-sauce', es: 'Lechuga, tomate, pepino, cebolla, carne e salsa kebab' }, image: IMG_KEBAB_BREAD },
       { id: 'sp60', number: '60', name: 'Rolo de Kebab', price: '9.50€', ingredients: { pt: 'Alface, tomate, pepino, cebola, carne e molho de kebab', en: 'Lettuce, tomato, cucumber, onions, meat and kebab sauce', fr: 'Laitue, tomate fraîche, concombre, oignon, viande de kebab et sauce de kebab', de: 'Salat, tomaten, gurken, zwiebeln, fleisch und kebab-sauce', es: 'Lechuga, tomate, pepino, cebolla, carne e salsa kebab' }, image: IMG_KEBAB_ROLL },
       { id: 'sp61', number: '61', name: 'Rolo de Frango', price: '9.50€', ingredients: { pt: 'Alface, tomate, pepino, cebola, frango e molho de kebab', en: 'Lettuce, tomato, cucumber, onions, chicken and kebab sauce', fr: 'Laitue, tomate fraîche, concombre, oignon, poulet et sauce de kebab', de: 'Salat, tomaten, gurken, zwiebeln, hühnchen and kebab-sauce', es: 'Lechuga, tomate, pepino, cebolla, pollo e salsa kebab' }, image: IMG_KEBAB_ROLL }
+    ]
+  },
+  {
+    id: 'bebidas',
+    title: {
+      pt: 'Bebidas',
+      en: 'Drinks',
+      es: 'Bebidas',
+      fr: 'Boissons',
+      de: 'Getränke'
+    },
+    items: [
+      // Refrigerantes
+      { id: 'b01', number: '', name: 'Coca-Cola', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink' }, image: IMG_DRINKS },
+      { id: 'b02', number: '', name: 'Coca-Cola Zero', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink' }, image: IMG_DRINKS },
+      { id: 'b03', number: '', name: 'Fanta Laranja', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink' }, image: IMG_DRINKS },
+      { id: 'b04', number: '', name: 'Sprite', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink' }, image: IMG_DRINKS },
+      { id: 'b05', number: '', name: 'Guaraná', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink' }, image: IMG_DRINKS },
+      { id: 'b06', number: '', name: 'Sumol Laranja', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink' }, image: IMG_DRINKS },
+      { id: 'b07', number: '', name: 'Sumol Ananás', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink' }, image: IMG_DRINKS },
+      { id: 'b08', number: '', name: 'Fuze tea Limão', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink' }, image: IMG_DRINKS },
+      { id: 'b09', number: '', name: 'Fuze tea Pêssego', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink' }, image: IMG_DRINKS },
+      { id: 'b10', number: '', name: 'Fuze tea Manga Ananás', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink' }, image: IMG_DRINKS },
+      // Águas
+      { id: 'b11', number: '', name: 'Água Mineral (0,50L)', price: '1.50€', ingredients: { pt: 'Água', en: 'Water' }, image: IMG_DRINKS },
+      { id: 'b12', number: '', name: 'Água das Pedras', price: '2.00€', ingredients: { pt: 'Água', en: 'Water' }, image: IMG_DRINKS },
+      { id: 'b13', number: '', name: 'Água Castelo', price: '2.00€', ingredients: { pt: 'Água', en: 'Water' }, image: IMG_DRINKS },
+      // Cervejas
+      { id: 'b14', number: '', name: 'Imperial', price: '1.60€', ingredients: { pt: 'Só para consumo no estabelecimento', en: 'In-house consumption only' }, image: IMG_DRINKS },
+      { id: 'b15', number: '', name: 'Caneca', price: '3.50€', ingredients: { pt: 'Só para consumo no estabelecimento', en: 'In-house consumption only' }, image: IMG_DRINKS },
+      { id: 'b16', number: '', name: 'Sagres (33cl)', price: '1.70€', ingredients: { pt: 'Cerveja', en: 'Beer' }, image: IMG_DRINKS },
+      { id: 'b17', number: '', name: 'Sagres S/Álcool (33cl)', price: '1.70€', ingredients: { pt: 'Cerveja', en: 'Beer' }, image: IMG_DRINKS },
+      { id: 'b18', number: '', name: 'Sagres Preta', price: '1.70€', ingredients: { pt: 'Cerveja', en: 'Beer' }, image: IMG_DRINKS },
+      { id: 'b19', number: '', name: 'Somersby', price: '2.70€', ingredients: { pt: 'Cerveja', en: 'Beer' }, image: IMG_DRINKS },
+      // Sangrias
+      { id: 'b20', number: '', name: 'Copo de Sangria', price: '4.50€', ingredients: { pt: 'Só para consumo no estabelecimento', en: 'In-house consumption only' }, image: IMG_DRINKS },
+      { id: 'b21', number: '', name: 'Jarro de Sangria (1L)', price: '13.50€', ingredients: { pt: 'Só para consumo no estabelecimento', en: 'In-house consumption only' }, image: IMG_DRINKS },
+      { id: 'b22', number: '', name: 'Jarro Frutos Vermelhos (1L)', price: '14.50€', ingredients: { pt: 'Só para consumo no estabelecimento', en: 'In-house consumption only' }, image: IMG_DRINKS },
+      { id: 'b23', number: '', name: 'Copo de Vinho', price: '3.00€', ingredients: { pt: 'Só para consumo no estabelecimento', en: 'In-house consumption only' }, image: IMG_DRINKS }
     ]
   }
 ];

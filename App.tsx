@@ -187,6 +187,7 @@ const App: React.FC = () => {
   const CATEGORY_COLORS: Record<string, string> = {
     'entradas': '#FF5733', 'saladas': '#2ECC71', 'massas': '#F1C40F',
     'especialidades': '#9B59B6', 'pizzas-classicas': '#E74C3C', 'pizzas-especiais': '#C0392B',
+    'bebidas': '#3498DB',
   };
 
   return (
