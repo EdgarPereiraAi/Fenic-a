@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { MENU_DATA, CHEF_LOGO } from './data';
 import { MenuItemCard } from './components/MenuItemCard';
 import { LanguageSelector } from './components/LanguageSelector';
@@ -341,6 +342,7 @@ const App: React.FC = () => {
           <button onClick={() => isAdmin ? handleLogout() : setIsLoginModalOpen(true)} className="text-[9px] text-gray-300 hover:text-[#FF5733] transition-all uppercase tracking-[0.5em] font-black border border-gray-100 px-6 py-3 rounded-full">{isAdmin ? t.closePanel : t.restrictedAccess}</button>
         </div>
       </footer>
+      <SpeedInsights />
     </div>
   );
 };
