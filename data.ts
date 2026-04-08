@@ -161,6 +161,7 @@ export const MENU_DATA: Category[] = [
       { id: 'b08', number: '', name: 'Fuze tea Limão', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink', fr: 'Boisson', de: 'Erfrischungsgetränk', es: 'Refresco' }, image: IMG_DRINKS },
       { id: 'b09', number: '', name: 'Fuze tea Pêssego', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink', fr: 'Boisson', de: 'Erfrischungsgetränk', es: 'Refresco' }, image: IMG_DRINKS },
       { id: 'b10', number: '', name: 'Fuze tea Manga Ananás', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink', fr: 'Boisson', de: 'Erfrischungsgetränk', es: 'Refresco' }, image: IMG_DRINKS },
+      { id: 'b24', number: '', name: '7up', price: '2.50€', ingredients: { pt: 'Refrigerante', en: 'Soft drink', fr: 'Boisson', de: 'Erfrischungsgetränk', es: 'Refresco' }, image: IMG_DRINKS },
       // Águas
       { id: 'b11', number: '', name: 'Água Mineral (0,50L)', price: '1.50€', ingredients: { pt: 'Água', en: 'Water', fr: 'Eau', de: 'Wasser', es: 'Agua' }, image: IMG_DRINKS },
       { id: 'b12', number: '', name: 'Água das Pedras', price: '2.00€', ingredients: { pt: 'Água', en: 'Water', fr: 'Eau', de: 'Wasser', es: 'Agua' }, image: IMG_DRINKS },
